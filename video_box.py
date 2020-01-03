@@ -5,9 +5,10 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from cv2 import *
+from GUI.OCR_GUI import Ui_Monitor
 
 
-class VideoBox(QWidget):
+class VideoBox(Ui_Monitor):
 
     VIDEO_TYPE_OFFLINE = 0
     VIDEO_TYPE_REAL_TIME = 1
@@ -18,32 +19,25 @@ class VideoBox(QWidget):
 
     video_url = ""
 
-    def __init__(self, video_url="", video_type=VIDEO_TYPE_OFFLINE, auto_play=True):
-        QWidget.__init__(self)
+    def __init__(self, mainWindow, video_url="", video_type=VIDEO_TYPE_OFFLINE, auto_play=True):
+        self.setupUi(mainWindow)
         self.video_url = video_url
         self.video_type = video_type  # 0: offline  1: realTime
         self.auto_play = auto_play
         self.status = self.STATUS_INIT  # 0: init 1:playing 2: pause
+        self.element_init()
 
-        # 组件展示
+    def element_init(self):
+        # Components
         self.pictureLabel = QLabel()
-        init_image = QPixmap("resource/cat.jpeg").scaled(self.width(), self.height())
+        init_image = QPixmap("resource/cat.jpeg").scaled(self.centralwidget.width(), self.centralwidget.height())
         self.pictureLabel.setPixmap(init_image)
 
-        self.playButton = QPushButton()
-        self.playButton.setEnabled(True)
-        self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
-        self.playButton.clicked.connect(self.switch_video)
+        self.Run_OCR.setEnabled(True)
+        self.Run_OCR.setIcon(self.centralwidget.style().standardIcon(QStyle.SP_MediaPlay))
+        self.Run_OCR.clicked.connect(self.switch_video)
 
-        control_box = QHBoxLayout()
-        control_box.setContentsMargins(0, 0, 0, 0)
-        control_box.addWidget(self.playButton)
-
-        layout = QVBoxLayout()
-        layout.addWidget(self.pictureLabel)
-        layout.addLayout(control_box)
-
-        self.setLayout(layout)
+        self.mainlayerout.addWidget(self.pictureLabel)
 
         # timer 设置
         self.timer = VideoTimer()
@@ -61,7 +55,7 @@ class VideoBox(QWidget):
         self.timer.stop()
         self.playCapture.release()
         self.status = VideoBox.STATUS_INIT
-        self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
+        self.Run_OCR.setIcon(self.centralwidget.style().standardIcon(QStyle.SP_MediaPlay))
 
     def set_timer_fps(self):
         self.playCapture.open(self.video_url)
@@ -84,7 +78,7 @@ class VideoBox(QWidget):
         if not self.playCapture.isOpened():
             self.playCapture.open(self.video_url)
         self.timer.start()
-        self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
+        self.Run_OCR.setIcon(self.centralwidget.style().standardIcon(QStyle.SP_MediaPause))
         self.status = VideoBox.STATUS_PLAYING
 
     def stop(self):
@@ -94,7 +88,7 @@ class VideoBox(QWidget):
             self.timer.stop()
             if self.video_type is VideoBox.VIDEO_TYPE_REAL_TIME:
                 self.playCapture.release()
-            self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
+            self.Run_OCR.setIcon(self.centralwidget.style().standardIcon(QStyle.SP_MediaPlay))
         self.status = VideoBox.STATUS_PAUSE
 
     def re_play(self):
@@ -103,7 +97,7 @@ class VideoBox(QWidget):
         self.playCapture.release()
         self.playCapture.open(self.video_url)
         self.timer.start()
-        self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
+        self.Run_OCR.setIcon(self.centralwidget.style().standardIcon(QStyle.SP_MediaPause))
         self.status = VideoBox.STATUS_PLAYING
 
     def show_video_images(self):
@@ -125,7 +119,7 @@ class VideoBox(QWidget):
                 if not success and self.video_type is VideoBox.VIDEO_TYPE_OFFLINE:
                     print("play finished")  # Judge local file is finished
                     self.reset()
-                    self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaStop))
+                    self.Run_OCR.setIcon(self.centralwidget.style().standardIcon(QStyle.SP_MediaStop))
                 return
         else:
             print("open file or capturing device error, init again")
@@ -137,17 +131,17 @@ class VideoBox(QWidget):
         if self.status is VideoBox.STATUS_INIT:
             self.playCapture.open(self.video_url)
             self.timer.start()
-            self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
+            self.Run_OCR.setIcon(self.centralwidget.style().standardIcon(QStyle.SP_MediaPause))
         elif self.status is VideoBox.STATUS_PLAYING:
             self.timer.stop()
             if self.video_type is VideoBox.VIDEO_TYPE_REAL_TIME:
                 self.playCapture.release()
-            self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
+            self.Run_OCR.setIcon(self.centralwidget.style().standardIcon(QStyle.SP_MediaPlay))
         elif self.status is VideoBox.STATUS_PAUSE:
             if self.video_type is VideoBox.VIDEO_TYPE_REAL_TIME:
                 self.playCapture.open(self.video_url)
             self.timer.start()
-            self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPause))
+            self.Run_OCR.setIcon(self.centralwidget.style().standardIcon(QStyle.SP_MediaPause))
 
         self.status = (VideoBox.STATUS_PLAYING,
                        VideoBox.STATUS_PAUSE,
@@ -190,9 +184,10 @@ class VideoTimer(QThread):
 
 
 if __name__ == "__main__":
-    mapp = QApplication(sys.argv)
-    mw = VideoBox()
+    app = QApplication(sys.argv)
+    mainwindow = QMainWindow()
+    mw = VideoBox(mainWindow=mainwindow)
     # mw.set_video("resource/video.mp4", VideoBox.VIDEO_TYPE_OFFLINE, False)
     mw.set_video(0, VideoBox.VIDEO_TYPE_REAL_TIME, True)
-    mw.show()
-    sys.exit(mapp.exec_())
+    mainwindow.show()
+    sys.exit(app.exec_())
