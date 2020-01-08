@@ -32,6 +32,9 @@ class Box_manager_widget(QWidget, Ui_UI_box_manager):
         super(QWidget, self).__init__()
         self.setupUi(self)
 
+    def box_list_init(self):
+        self.Box_list.update()
+
     def show_boxes(self):
         print(mw.pictureLabel.videobox)
 
