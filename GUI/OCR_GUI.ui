@@ -14,8 +14,11 @@
    <string>OCR Monitor</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>../resource/logo.png</normaloff>../resource/logo.png</iconset>
+   <iconset resource="../resource/res.qrc">
+    <normaloff>:/logo/logo.png</normaloff>:/logo/logo.png</iconset>
+  </property>
+  <property name="toolButtonStyle">
+   <enum>Qt::ToolButtonTextBesideIcon</enum>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
@@ -186,7 +189,11 @@
              </widget>
             </item>
             <item row="0" column="4">
-             <widget class="QLineEdit" name="PDF_file_name"/>
+             <widget class="QLineEdit" name="PDF_file_name">
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+             </widget>
             </item>
             <item row="0" column="2">
              <spacer name="horizontalSpacer_4">
@@ -321,7 +328,6 @@
     <property name="title">
      <string>Setting</string>
     </property>
-    <addaction name="actionBox_set"/>
     <addaction name="actionBox_manage"/>
    </widget>
    <addaction name="menuSet_Camera"/>
@@ -348,6 +354,8 @@
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resource/res.qrc"/>
+ </resources>
  <connections/>
 </ui>
