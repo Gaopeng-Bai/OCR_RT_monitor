@@ -32,6 +32,9 @@ class Box_manager_widget(QWidget, Ui_UI_box_manager):
         super(QWidget, self).__init__()
         self.setupUi(self)
 
+    def show_boxes(self):
+        print(mw.pictureLabel.videobox)
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

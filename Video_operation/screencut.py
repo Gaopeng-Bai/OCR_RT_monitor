@@ -63,7 +63,7 @@ class myLabel(QLabel):
         painter.setPen(QPen(Qt.green, 2, Qt.DotLine))
         painter.drawRect(rect)
 
-    def pix_point(self, name, path):
+    def pix_point(self, name):
         if name != 0:
             temp = {name: [self.x0, self.x1, self.y0, self.y1]}
             self.videobox.update(temp)
