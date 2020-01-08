@@ -24,7 +24,6 @@ class OCR_main(QMainWindow, VideoWindow):
 
     @staticmethod
     def test():
-
         ch.show()
 
 

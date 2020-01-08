@@ -7,26 +7,38 @@
 @software: Pycharm
 @file: screencut.py
 @time: 1/7/2020 12:18 PM
-@desc:
+@desc: Manually draw a rect box that need to be recognised by using mouse events.
 """
 from PyQt5.QtWidgets import QLabel
 from PyQt5.QtCore import *
 from PyQt5.QtGui import QPainter, QPen, QGuiApplication
 from Video_operation.Rcongnition import ocr_core
 
+from six.moves import cPickle
+import os
+
 
 class myLabel(QLabel):
+    """
+    Initialize the box parameters.
+    """
     x0 = 0
     y0 = 0
     x1 = 0
     y1 = 0
     flag = True
 
-    videobox = {}
-
-    def __init__(self, func):
+    def __init__(self, func, path="resource"):
         super().__init__()
+        # callback function to interact between qt input dialog and paintevent.
         self.function = func
+        # The box info save path.
+        self.file_path = os.path.join(path, "vocab.pkl")
+        if not os.path.exists(self.file_path):
+            self.videobox = {}
+        else:
+            with open(self.file_path, 'rb') as f:
+                self.videobox = cPickle.load(f)
 
     def mousePressEvent(self, event):
         if event.buttons() == Qt.LeftButton:  #
@@ -51,11 +63,18 @@ class myLabel(QLabel):
         painter.setPen(QPen(Qt.green, 2, Qt.DotLine))
         painter.drawRect(rect)
 
-    def pix_point(self, name):
+    def pix_point(self, name, path):
         if name != 0:
             temp = {name: [self.x0, self.x1, self.y0, self.y1]}
             self.videobox.update(temp)
+            self.save_box_to_local()
+
             self.pick_screencut(self.videobox)
+
+    def save_box_to_local(self):
+        save_dict = dict(zip(self.videobox.keys(), self.videobox.values()))
+        with open(self.file_path, 'wb') as f:
+            cPickle.dump(save_dict, f)
 
     def box_clear(self):
         self.videobox.clear()
@@ -65,6 +84,7 @@ class myLabel(QLabel):
             pqscreen = QGuiApplication.primaryScreen()
             pixmap2 = pqscreen.grabWindow(self.winId(), dic[key][0], dic[key][2], abs(dic[key][1] - dic[key][0]),
                                           abs(dic[key][3] - dic[key][2]))
+            # for test
             pixmap2.save(str(key) + '.png')
             self.recognition(str(key) + '.png')
 
