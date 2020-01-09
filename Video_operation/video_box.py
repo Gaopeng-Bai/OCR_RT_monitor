@@ -88,8 +88,9 @@ class Video_controller_window(Ui_Monitor):
 
     def set_timer_fps(self):
         self.playCapture.open(self.video_url)
+        # sometime fps default
         fps = self.playCapture.get(CAP_PROP_FPS)
-        self.timer.set_fps(fps)
+        self.timer.set_fps(24)
         self.playCapture.release()
         cv2.destroyAllWindows()
 

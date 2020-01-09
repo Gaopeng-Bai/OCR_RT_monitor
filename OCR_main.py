@@ -31,9 +31,22 @@ class Box_manager_widget(QWidget, Ui_UI_box_manager):
     def __init__(self):
         super(QWidget, self).__init__()
         self.setupUi(self)
+        # self.box_list_init()
 
     def box_list_init(self):
-        self.Box_list.update()
+        """
+        init the contents of box list
+        :return:
+        """
+        self.Box_list.setColumnCount(5)
+        self.Box_list.verticalHeader().setVisible(False)
+        self.Box_list.setStyleSheet("QHeaderView::section{Background-color:rgb(0,1,1)}")
+        self.Box_list.setHorizontalHeaderLabels(['Box name', 'X0', 'x1', 'y0', 'y1'])
+        self.Box_list.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.Box_list.resizeColumnsToContents()
+        self.Box_list.resizeRowsToContents()
+        self.Box_list.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.Box_list.setSelectionBehavior(QAbstractItemView.SelectRows)
 
     def show_boxes(self):
         print(mw.pictureLabel.videobox)
