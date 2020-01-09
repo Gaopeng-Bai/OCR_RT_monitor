@@ -17,6 +17,8 @@ from PyQt5.QtWidgets import *
 from Video_operation.video_box import Video_controller_window as VideoWindow
 from GUI.box_manager import Ui_UI_box_manager
 
+from six.moves import cPickle
+
 
 def get_keys(d, value):
     """
@@ -32,9 +34,16 @@ def get_keys(d, value):
 
 
 class OCR_main(QWidget, VideoWindow):
-    def __init__(self, mainWindow):
+    def __init__(self, mainWindow, path="resource"):
         super().__init__(mainWindow=mainWindow)
-        self.combine = {}
+        # reload box_position data, if not exist create new.
+        self.file_path = os.path.join(path, "pdf.pkl")
+        if not os.path.exists(self.file_path):
+            self.combine = {}
+        else:
+            with open(self.file_path, 'rb') as f:
+                self.combine = cPickle.load(f)
+
         self.cwd = os.getcwd()
         self.GUi_init_setting()
         self.pictureLabel.box_refresh_signal.signal[str].connect(self.refresh_boxes_to_output)
@@ -52,9 +61,14 @@ class OCR_main(QWidget, VideoWindow):
         y = self.PositionY.text()
         if x != '' and y != '':
             self.combine[self.boxes.currentText()] = [x, y]
-
+            self.save_box_to_local()
         else:
             QMessageBox.about(None, "No data", "Please fill position x and y completely")
+
+    def save_box_to_local(self):
+        save_dict = dict(zip(self.combine.keys(), self.combine.values()))
+        with open(self.file_path, 'wb') as f:
+            cPickle.dump(save_dict, f)
 
     def refresh_boxes_to_output(self):
         self.boxes.clear()
@@ -133,12 +147,15 @@ class Box_manager_widget(QWidget, Ui_UI_box_manager):
             # check if item_chosen is key in dict.
             if self.item_chosen in mw.pictureLabel.videobox:
                 mw.pictureLabel.videobox.pop(self.item_chosen)
+                mw.combine.pop(self.item_chosen)
                 mw.pictureLabel.delete_box_image(str(self.item_chosen)+'.png')
             else:
                 a = get_keys(mw.pictureLabel.videobox, self.item_chosen)
                 mw.pictureLabel.videobox.pop(a)
+                mw.combine.videobox.pop(a)
                 mw.pictureLabel.delete_box_image(str(a) + '.png')
             mw.pictureLabel.save_box_to_local()
+            mw.save_box_to_local()
             self.refresh_box()
         else:
             QMessageBox.about(None, "No item chosen", "Please click a item first")

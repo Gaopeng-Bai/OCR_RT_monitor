@@ -34,7 +34,7 @@ class myLabel(QLabel):
         self.function = func
         self.box_refresh_signal = Communicate()
         # The box info save path.
-        self.file_path = os.path.join(path, "vocab.pkl")
+        self.file_path = os.path.join(path, "boxes.pkl")
         if not os.path.exists(self.file_path):
             self.videobox = {}
         else:
