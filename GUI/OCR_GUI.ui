@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>943</width>
-    <height>584</height>
+    <width>1010</width>
+    <height>548</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -142,6 +142,18 @@
                 </property>
                </widget>
               </item>
+              <item row="5" column="4">
+               <widget class="QPushButton" name="Run_OCR">
+                <property name="font">
+                 <font>
+                  <pointsize>12</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Play/Pause</string>
+                </property>
+               </widget>
+              </item>
              </layout>
             </item>
            </layout>
@@ -235,14 +247,14 @@
              </spacer>
             </item>
             <item row="3" column="4">
-             <widget class="QPushButton" name="Run_OCR">
+             <widget class="QPushButton" name="pdf_position_set">
               <property name="text">
-               <string>Run</string>
+               <string>Set</string>
               </property>
              </widget>
             </item>
             <item row="3" column="1">
-             <widget class="QPushButton" name="Reset_PDF_output">
+             <widget class="QPushButton" name="pdf_position_reset">
               <property name="text">
                <string>Reset</string>
               </property>
@@ -312,7 +324,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>943</width>
+     <width>1010</width>
      <height>21</height>
     </rect>
    </property>
@@ -358,4 +370,8 @@
   <include location="../resource/res.qrc"/>
  </resources>
  <connections/>
+ <slots>
+  <slot>pdfPostitionSet()</slot>
+  <slot>pdfPositionReset()</slot>
+ </slots>
 </ui>

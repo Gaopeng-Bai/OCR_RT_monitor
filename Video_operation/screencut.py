@@ -32,6 +32,7 @@ class myLabel(QLabel):
         super().__init__()
         # callback function to interact between qt input dialog and paintevent.
         self.function = func
+        self.box_refresh_signal = Communicate()
         # The box info save path.
         self.file_path = os.path.join(path, "vocab.pkl")
         if not os.path.exists(self.file_path):
@@ -65,9 +66,9 @@ class myLabel(QLabel):
 
     def pix_point(self, name):
         if name != 0:
-            temp = {name: [self.x0, self.x1, self.y0, self.y1]}
-            self.videobox.update(temp)
+            self.videobox[name] = [self.x0, self.x1, self.y0, self.y1]
             self.save_box_to_local()
+            self.box_refresh_signal.signal.emit("1")
 
             self.pick_screencut(self.videobox)
 
@@ -78,6 +79,10 @@ class myLabel(QLabel):
 
     def box_clear(self):
         self.videobox.clear()
+
+    def delete_box_image(self, path):
+        if os.path.exists(path):
+            os.remove(path)
 
     def pick_screencut(self, dic):
         for key in dic:
@@ -90,4 +95,8 @@ class myLabel(QLabel):
 
     @staticmethod
     def recognition(path):
-        print("Test: "+ocr_core(path))
+        print("Test: " + ocr_core(path))
+
+
+class Communicate(QObject):
+    signal = pyqtSignal(str)

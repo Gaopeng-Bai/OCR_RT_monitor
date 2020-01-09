@@ -13,7 +13,10 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_UI_box_manager(object):
     def setupUi(self, UI_box_manager):
         UI_box_manager.setObjectName("UI_box_manager")
-        UI_box_manager.resize(448, 421)
+        UI_box_manager.resize(548, 419)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/logo/logo.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        UI_box_manager.setWindowIcon(icon)
         UI_box_manager.setStyleSheet("")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(UI_box_manager)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
@@ -26,8 +29,10 @@ class Ui_UI_box_manager(object):
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
         self.Box_list = QtWidgets.QTableWidget(self.frame)
+        self.Box_list.setAutoFillBackground(True)
+        self.Box_list.setStyleSheet("font: 12pt \"MS Shell Dlg 2\";")
+        self.Box_list.setColumnCount(5)
         self.Box_list.setObjectName("Box_list")
-        self.Box_list.setColumnCount(0)
         self.Box_list.setRowCount(0)
         self.verticalLayout.addWidget(self.Box_list)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
@@ -52,3 +57,4 @@ class Ui_UI_box_manager(object):
         UI_box_manager.setWindowTitle(_translate("UI_box_manager", "Box_Manager"))
         self.Change_box_name.setText(_translate("UI_box_manager", "Change Name"))
         self.delete_box.setText(_translate("UI_box_manager", "Delete"))
+import resource.res_rc

@@ -60,6 +60,8 @@ class Video_controller_window(Ui_Monitor):
     def element_init(self):
         # Components
         self.pictureLabel.setCursor(Qt.CrossCursor)
+        self.pictureLabel.setToolTip('Press down left button of mouse to draw a box, Right button to set a name of it'
+                                     'click ok save it, otherwise click cancel')
         init_image = QPixmap("resource/cat.jpeg").scaled(self.centralwidget.width(), self.centralwidget.height())
         self.pictureLabel.setPixmap(init_image)
 
@@ -88,7 +90,7 @@ class Video_controller_window(Ui_Monitor):
 
     def set_timer_fps(self):
         self.playCapture.open(self.video_url)
-        # sometime fps default
+        # sometime get fps failed.
         fps = self.playCapture.get(CAP_PROP_FPS)
         self.timer.set_fps(24)
         self.playCapture.release()
