@@ -49,12 +49,39 @@ class OCR_main(QWidget, VideoWindow):
         self.pictureLabel.box_refresh_signal.signal[str].connect(self.refresh_boxes_to_output)
 
     def GUi_init_setting(self):
-        self.menuSetting.triggered[QAction].connect(self.test)
+        self.menuSetting.triggered[QAction].connect(self.change_window)
         self.menuSetting.setToolTip('To change the boxes information')
+
+        # click to open file dialog
         self.ChoosePDFbutton.clicked.connect(self.pick_up_output_file)
+
         self.pdf_position_set.clicked.connect(self.pdf_position_set_)
-        # self.pdf_position_reset.clicked.connect()
+        self.pdf_position_set.setToolTip('Click to set this position')
+        self.pdf_position_reset.clicked.connect(self.delete_all_position)
+        self.pdf_position_reset.setToolTip('Click to delete all position')
+
         self.refresh_boxes_to_output()
+
+        # init combobox
+        self.init_position()
+        self.boxes.currentIndexChanged.connect(self.init_position)
+
+    def delete_all_position(self):
+        self.combine.clear()
+        self.init_position()
+        self.save_box_to_local()
+
+    def init_position(self):
+        """
+        set the position related current combobox text.
+        :return:
+        """
+        if self.boxes.currentText() in self.combine:
+            self.PositionX.setText(self.combine[self.boxes.currentText()][0])
+            self.PositionY.setText(self.combine[self.boxes.currentText()][1])
+        else:
+            self.PositionX.setText(' ')
+            self.PositionY.setText(' ')
 
     def pdf_position_set_(self):
         x = self.PositionX.text()
@@ -85,7 +112,7 @@ class OCR_main(QWidget, VideoWindow):
         else:
             self.PDF_file_name.setText(fileName_choose)
 
-    def test(self):
+    def change_window(self):
         mainwindow.setVisible(False)
         ch.refresh_box()
         ch.show()
@@ -147,15 +174,20 @@ class Box_manager_widget(QWidget, Ui_UI_box_manager):
             # check if item_chosen is key in dict.
             if self.item_chosen in mw.pictureLabel.videobox:
                 mw.pictureLabel.videobox.pop(self.item_chosen)
-                mw.combine.pop(self.item_chosen)
+                if self.item_chosen in mw.combine:
+                    mw.combine.pop(self.item_chosen)
+                    mw.save_box_to_local()
+
                 mw.pictureLabel.delete_box_image(str(self.item_chosen)+'.png')
             else:
                 a = get_keys(mw.pictureLabel.videobox, self.item_chosen)
                 mw.pictureLabel.videobox.pop(a)
-                mw.combine.videobox.pop(a)
+                if a in mw.combine:
+                    mw.combine.videobox.pop(a)
+                    mw.save_box_to_local()
+
                 mw.pictureLabel.delete_box_image(str(a) + '.png')
             mw.pictureLabel.save_box_to_local()
-            mw.save_box_to_local()
             self.refresh_box()
         else:
             QMessageBox.about(None, "No item chosen", "Please click a item first")
