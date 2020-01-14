@@ -15,6 +15,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from Video_operation.video_box import Video_controller_window as VideoWindow
+from Video_operation.pdf_to_image import _run_convert
 from GUI.box_manager import Ui_UI_box_manager
 
 from six.moves import cPickle
@@ -110,6 +111,7 @@ class OCR_main(QWidget, VideoWindow):
         if fileName_choose == "":
             QMessageBox.about(None, "No file chosen", "Please try again")
         else:
+            _run_convert(fileName_choose, 0)
             self.PDF_file_name.setText(fileName_choose)
 
     def change_window(self):
