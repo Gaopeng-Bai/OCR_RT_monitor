@@ -6,12 +6,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>319</width>
-    <height>343</height>
+    <width>980</width>
+    <height>2000</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Position generator</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../resource/res.qrc">
+    <normaloff>:/logo/logo.png</normaloff>:/logo/logo.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -19,6 +23,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resource/res.qrc"/>
+ </resources>
  <connections/>
 </ui>

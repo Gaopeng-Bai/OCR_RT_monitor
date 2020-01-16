@@ -263,8 +263,9 @@ class PDF_image(QWidget, Ui_Form):
 
     def init_GUI(self):
 
-        self.lb = pdf_label()
+        self.lb = pdf_label(callback_empty_painter=self.callback)
         self.lb.setGeometry(QRect(0, 0, 1000, 1400))
+        self.lb.setToolTip('Left button to draw a rect area that need to fill, Right button confirm current position')
 
         img = cv2.imread(self.path)
         height, width, bytesPerComponent = img.shape
@@ -279,6 +280,10 @@ class PDF_image(QWidget, Ui_Form):
         self.lb.setCursor(Qt.CrossCursor)
 
         self.lb.button_signal.signal[str].connect(self.slot_right_button)
+
+    @staticmethod
+    def callback():
+        QMessageBox.about(None, "No area drown", "Please press mouse left button to draw a area")
 
     def slot_right_button(self):
         x, y = self.lb.return_value()

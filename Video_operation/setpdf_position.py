@@ -23,9 +23,10 @@ class pdf_label(QLabel):
     y1 = 0
     flag = False
 
-    def __init__(self):
+    def __init__(self, callback_empty_painter):
         super().__init__()
         self.button_signal = Communicate()
+        self.callback_empty_painter = callback_empty_painter
 
     def mousePressEvent(self, event):
         if event.buttons() == Qt.LeftButton:  #
@@ -36,6 +37,8 @@ class pdf_label(QLabel):
             self.flag = False
             if self.x0 != 0 and self.y0 != 0:
                 self.button_signal.signal.emit("1")
+            else:
+                self.callback_empty_painter()
 
     def mouseReleaseEvent(self, event):
         self.flag = False
