@@ -11,11 +11,16 @@
 """
 import sys
 import os
+import cv2
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from Video_operation.video_box import Video_controller_window as VideoWindow
+from Video_operation.pdf_to_image import pdf_to_image
+from Video_operation.setpdf_position import pdf_label
+
 from GUI.box_manager import Ui_UI_box_manager
+from GUI.image_GUI import Ui_Form
 
 from six.moves import cPickle
 
@@ -45,11 +50,12 @@ class OCR_main(QWidget, VideoWindow):
                 self.combine = cPickle.load(f)
 
         self.cwd = os.getcwd()
+        self.pdftoimage = pdf_to_image()
         self.GUi_init_setting()
         self.pictureLabel.box_refresh_signal.signal[str].connect(self.refresh_boxes_to_output)
 
     def GUi_init_setting(self):
-        self.menuSetting.triggered[QAction].connect(self.change_window)
+        self.menuSetting.triggered[QAction].connect(self.Boxmanager_window)
         self.menuSetting.setToolTip('To change the boxes information')
 
         # click to open file dialog
@@ -77,15 +83,23 @@ class OCR_main(QWidget, VideoWindow):
         :return:
         """
         if self.boxes.currentText() in self.combine:
-            self.PositionX.setText(self.combine[self.boxes.currentText()][0])
-            self.PositionY.setText(self.combine[self.boxes.currentText()][1])
+            self.PositionX.setText(str(self.combine[self.boxes.currentText()][0]))
+            self.PositionY.setText(str(self.combine[self.boxes.currentText()][1]))
         else:
             self.PositionX.setText(' ')
             self.PositionY.setText(' ')
 
     def pdf_position_set_(self):
-        x = self.PositionX.text()
-        y = self.PositionY.text()
+        if self.PDF_file_name.text() != '':
+            # ex.set_path(self.pdftoimage.img_path)
+            self.position_set_window()
+        else:
+            QMessageBox.about(None, "No file chosen", "Please pick a pdf file first")
+
+    def position_save(self, x, y):
+        self.PositionX.setText(str(x))
+        self.PositionY.setText(str(y))
+
         if x != '' and y != '':
             self.combine[self.boxes.currentText()] = [x, y]
             self.save_box_to_local()
@@ -110,12 +124,19 @@ class OCR_main(QWidget, VideoWindow):
         if fileName_choose == "":
             QMessageBox.about(None, "No file chosen", "Please try again")
         else:
+            self.pdftoimage.run_convert(fileName_choose, 0)
             self.PDF_file_name.setText(fileName_choose)
 
-    def change_window(self):
+    @staticmethod
+    def Boxmanager_window():
         mainwindow.setVisible(False)
         ch.refresh_box()
         ch.show()
+
+    @staticmethod
+    def position_set_window():
+        mainwindow.setVisible(False)
+        ex.show()
 
 
 class Box_manager_widget(QWidget, Ui_UI_box_manager):
@@ -178,7 +199,7 @@ class Box_manager_widget(QWidget, Ui_UI_box_manager):
                     mw.combine.pop(self.item_chosen)
                     mw.save_box_to_local()
 
-                mw.pictureLabel.delete_box_image(str(self.item_chosen)+'.png')
+                mw.pictureLabel.delete_box_image(str(self.item_chosen) + '.png')
             else:
                 a = get_keys(mw.pictureLabel.videobox, self.item_chosen)
                 mw.pictureLabel.videobox.pop(a)
@@ -232,6 +253,55 @@ class Box_manager_widget(QWidget, Ui_UI_box_manager):
         self.item_chosen = item.text()
 
 
+class PDF_image(QWidget, Ui_Form):
+    def __init__(self, path='example.png'):
+        super(QWidget, self).__init__()
+        self.setupUi(self)
+
+        self.path = path
+        self.init_GUI()
+
+    def init_GUI(self):
+
+        self.lb = pdf_label(callback_empty_painter=self.callback)
+        self.lb.setGeometry(QRect(0, 0, 1000, 1400))
+        self.lb.setToolTip('Left button to draw a rect area that need to fill, Right button confirm current position')
+
+        self.image_set(self.path)
+        self.verticalLayout_2.addWidget(self.lb)
+
+        self.lb.setCursor(Qt.CrossCursor)
+
+        self.lb.button_signal.signal[str].connect(self.slot_right_button)
+
+    def image_set(self, path):
+        img = cv2.imread(path)
+        height, width, bytesPerComponent = img.shape
+        bytesPerLine = 3 * width
+        cv2.cvtColor(img, cv2.COLOR_BGR2RGB, img)
+        QImg = QImage(img.data, width, height, bytesPerLine, QImage.Format_RGB888)
+        pixmap = QPixmap.fromImage(QImg)
+
+        self.lb.setPixmap(pixmap)
+
+    @staticmethod
+    def callback():
+        QMessageBox.about(None, "No area drown", "Please press mouse left button to draw a area")
+
+    def slot_right_button(self):
+        x, y = self.lb.return_value()
+        mw.position_save(x, y)
+        self.close()
+
+    def closeEvent(self, event):
+        """
+        overwrite closeEvent method，execute code when this window closed.
+        :param event: close() the event triggered.
+        :return: None
+        """
+        mainwindow.setVisible(True)
+
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     mainwindow = QMainWindow()
@@ -240,4 +310,5 @@ if __name__ == "__main__":
     mw.set_video(0, OCR_main.VIDEO_TYPE_REAL_TIME, True)
     mainwindow.show()
     ch = Box_manager_widget()
+    ex = PDF_image()
     sys.exit(app.exec_())
