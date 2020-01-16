@@ -15,6 +15,7 @@ import io
 from wand.image import Image
 from wand.color import Color
 from PyPDF2 import PdfFileReader, PdfFileWriter
+import os
 
 memo = {}
 
@@ -42,9 +43,22 @@ def _run_convert(filename, page, res=120):
     img.format = 'png'
     img.compression_quality = 100
     img.background_color = Color("white")
-    img_path = '%s%d.png' % (filename[:filename.rindex('.')], idx)
+    filename = filename.split("/")[-1]
+    img_path = '%s%s.png' % (filename[:filename.rindex('.')], "temp")
+    delete_file("temp", root='.')
     img.save(filename=img_path)
     img.destroy()
+
+
+def delete_file(keyword, root):
+    filelist = []
+    for root, dirs, files in os.walk(root):
+        for name in files:
+            filelist.append(os.path.join(root, name))
+    for i in filelist:
+        if os.path.isfile(i):
+            if keyword in os.path.split(i)[1]:
+                os.remove(i)
 
 
 if __name__ == '__main__':

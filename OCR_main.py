@@ -114,7 +114,8 @@ class OCR_main(QWidget, VideoWindow):
             _run_convert(fileName_choose, 0)
             self.PDF_file_name.setText(fileName_choose)
 
-    def change_window(self):
+    @staticmethod
+    def change_window():
         mainwindow.setVisible(False)
         ch.refresh_box()
         ch.show()
@@ -180,7 +181,7 @@ class Box_manager_widget(QWidget, Ui_UI_box_manager):
                     mw.combine.pop(self.item_chosen)
                     mw.save_box_to_local()
 
-                mw.pictureLabel.delete_box_image(str(self.item_chosen)+'.png')
+                mw.pictureLabel.delete_box_image(str(self.item_chosen) + '.png')
             else:
                 a = get_keys(mw.pictureLabel.videobox, self.item_chosen)
                 mw.pictureLabel.videobox.pop(a)
