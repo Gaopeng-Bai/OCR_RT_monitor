@@ -254,7 +254,7 @@ class Box_manager_widget(QWidget, Ui_UI_box_manager):
 
 
 class PDF_image(QWidget, Ui_Form):
-    def __init__(self, path='exampletemp.png'):
+    def __init__(self, path='example.png'):
         super(QWidget, self).__init__()
         self.setupUi(self)
 
@@ -267,7 +267,15 @@ class PDF_image(QWidget, Ui_Form):
         self.lb.setGeometry(QRect(0, 0, 1000, 1400))
         self.lb.setToolTip('Left button to draw a rect area that need to fill, Right button confirm current position')
 
-        img = cv2.imread(self.path)
+        self.image_set(self.path)
+        self.verticalLayout_2.addWidget(self.lb)
+
+        self.lb.setCursor(Qt.CrossCursor)
+
+        self.lb.button_signal.signal[str].connect(self.slot_right_button)
+
+    def image_set(self, path):
+        img = cv2.imread(path)
         height, width, bytesPerComponent = img.shape
         bytesPerLine = 3 * width
         cv2.cvtColor(img, cv2.COLOR_BGR2RGB, img)
@@ -275,11 +283,6 @@ class PDF_image(QWidget, Ui_Form):
         pixmap = QPixmap.fromImage(QImg)
 
         self.lb.setPixmap(pixmap)
-        self.verticalLayout_2.addWidget(self.lb)
-
-        self.lb.setCursor(Qt.CrossCursor)
-
-        self.lb.button_signal.signal[str].connect(self.slot_right_button)
 
     @staticmethod
     def callback():
@@ -289,11 +292,6 @@ class PDF_image(QWidget, Ui_Form):
         x, y = self.lb.return_value()
         mw.position_save(x, y)
         self.close()
-
-    # def mouseDoubleClickEvent(self, event):
-    #     if event.buttons() == Qt.LeftButton:
-    #         if self.x0 != 0 and self.y0 != 0:
-    #             self.close()
 
     def closeEvent(self, event):
         """
