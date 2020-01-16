@@ -83,8 +83,8 @@ class OCR_main(QWidget, VideoWindow):
         :return:
         """
         if self.boxes.currentText() in self.combine:
-            self.PositionX.setText(self.combine[self.boxes.currentText()][0])
-            self.PositionY.setText(self.combine[self.boxes.currentText()][1])
+            self.PositionX.setText(str(self.combine[self.boxes.currentText()][0]))
+            self.PositionY.setText(str(self.combine[self.boxes.currentText()][1]))
         else:
             self.PositionX.setText(' ')
             self.PositionY.setText(' ')
