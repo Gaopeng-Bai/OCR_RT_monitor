@@ -20,36 +20,6 @@ import os
 memo = {}
 
 
-def getPdfReader(filename):
-    reader = memo.get(filename, None)
-    if reader is None:
-        reader = PdfFileReader(filename, strict=False)
-        memo[filename] = reader
-    return reader
-
-
-def _run_convert(filename, page, res=120):
-    idx = page + 1
-    pdfile = getPdfReader(filename)
-    pageObj = pdfile.getPage(page)
-    dst_pdf = PdfFileWriter()
-    dst_pdf.addPage(pageObj)
-
-    pdf_bytes = io.BytesIO()
-    dst_pdf.write(pdf_bytes)
-    pdf_bytes.seek(0)
-
-    img = Image(file=pdf_bytes, resolution=res)
-    img.format = 'png'
-    img.compression_quality = 100
-    img.background_color = Color("white")
-    filename = filename.split("/")[-1]
-    img_path = '%s%s.png' % (filename[:filename.rindex('.')], "temp")
-    delete_file("temp", root='.')
-    img.save(filename=img_path)
-    img.destroy()
-
-
 def delete_file(keyword, root):
     filelist = []
     for root, dirs, files in os.walk(root):
@@ -61,5 +31,33 @@ def delete_file(keyword, root):
                 os.remove(i)
 
 
-if __name__ == '__main__':
-    _run_convert('example.pdf', 0)
+def getPdfReader(filename):
+    reader = memo.get(filename, None)
+    if reader is None:
+        reader = PdfFileReader(filename, strict=False)
+        memo[filename] = reader
+    return reader
+
+
+class pdf_to_image:
+
+    def run_convert(self, filename, page, res=120):
+        # idx = page + 1
+        pdfile = getPdfReader(filename)
+        pageObj = pdfile.getPage(page)
+        dst_pdf = PdfFileWriter()
+        dst_pdf.addPage(pageObj)
+
+        pdf_bytes = io.BytesIO()
+        dst_pdf.write(pdf_bytes)
+        pdf_bytes.seek(0)
+
+        img = Image(file=pdf_bytes, resolution=res)
+        img.format = 'png'
+        img.compression_quality = 100
+        img.background_color = Color("white")
+        filename = filename.split("/")[-1]
+        self.img_path = '%s%s.png' % (filename[:filename.rindex('.')], "temp")
+        delete_file("temp", root='.')
+        img.save(filename=self.img_path)
+        img.destroy()
