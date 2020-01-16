@@ -13,6 +13,7 @@ from PyQt5.QtWidgets import QLabel
 from PyQt5.QtCore import *
 from PyQt5.QtGui import QPainter, QPen, QGuiApplication
 from Video_operation.Rcongnition import ocr_core
+from Video_operation.Signal_creator import Communicate
 
 from six.moves import cPickle
 import os
@@ -80,7 +81,8 @@ class myLabel(QLabel):
     def box_clear(self):
         self.videobox.clear()
 
-    def delete_box_image(self, path):
+    @staticmethod
+    def delete_box_image(path):
         if os.path.exists(path):
             os.remove(path)
 
@@ -96,7 +98,3 @@ class myLabel(QLabel):
     @staticmethod
     def recognition(path):
         print("Test: " + ocr_core(path))
-
-
-class Communicate(QObject):
-    signal = pyqtSignal(str)

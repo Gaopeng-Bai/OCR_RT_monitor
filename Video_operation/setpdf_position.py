@@ -11,9 +11,11 @@
 """
 # coding=utf-8
 
-from PyQt5.QtCore import QRect, Qt, QObject, pyqtSignal
+from PyQt5.QtCore import QRect, Qt
 from PyQt5.QtGui import QPainter, QPen
 from PyQt5.QtWidgets import QLabel
+
+from Video_operation.Signal_creator import Communicate
 
 
 class pdf_label(QLabel):
@@ -60,7 +62,3 @@ class pdf_label(QLabel):
 
         return int((self.x0+(self.x1-self.x0)/2-133+127)*96/162), \
                int((1470-(self.y0+(self.y1-self.y0)/2+462))*595/982+230)
-
-
-class Communicate(QObject):
-    signal = pyqtSignal(str)
