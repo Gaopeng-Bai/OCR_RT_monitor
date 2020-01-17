@@ -18,6 +18,7 @@ from PyQt5.QtWidgets import *
 from cv2 import *
 from GUI.OCR_GUI import Ui_Monitor
 from Video_operation.screencut import myLabel
+from Video_operation.Signal_creator import Communicate
 
 import ctypes
 
@@ -36,7 +37,7 @@ class Video_controller_window(Ui_Monitor):
 
     def __init__(self, mainWindow, video_url="", video_type=VIDEO_TYPE_OFFLINE, auto_play=True):
         self.playCapture = VideoCapture(0, cv2.CAP_DSHOW)
-        self.timer = VideoTimer()
+        self.Video_timer = VideoTimer()
         self.pictureLabel = myLabel(self.save_box_callback)
         self.setupUi(mainWindow)
         self.video_url = video_url
@@ -71,8 +72,8 @@ class Video_controller_window(Ui_Monitor):
         self.Run_OCR.setIcon(self.centralwidget.style().standardIcon(QStyle.SP_MediaPlay))
         self.Run_OCR.clicked.connect(self.switch_video)
 
-        # timer 设置
-        self.timer.timeSignal.signal[str].connect(self.show_video_images)
+        # Video_timer 设置
+        self.Video_timer.Video_timeSignal.signal[str].connect(self.show_video_images)
 
         # video 初始设置
         if self.video_url != "":
@@ -82,7 +83,7 @@ class Video_controller_window(Ui_Monitor):
         # self.videoWriter = VideoWriter('*.mp4', VideoWriter_fourcc('M', 'J', 'P', 'G'), self.fps, size)
 
     def reset(self):
-        self.timer.stop()
+        self.Video_timer.stop()
         self.playCapture.release()
         cv2.destroyAllWindows()
         self.status = Video_controller_window.STATUS_INIT
@@ -92,7 +93,7 @@ class Video_controller_window(Ui_Monitor):
         self.playCapture.open(self.video_url)
         # sometime get fps failed.
         fps = self.playCapture.get(CAP_PROP_FPS)
-        self.timer.set_fps(24)
+        self.Video_timer.set_fps(24)
         self.playCapture.release()
         cv2.destroyAllWindows()
 
@@ -110,7 +111,7 @@ class Video_controller_window(Ui_Monitor):
             return
         if not self.playCapture.isOpened():
             self.playCapture.open(self.video_url)
-        self.timer.start()
+        self.Video_timer.start()
         self.Run_OCR.setIcon(self.centralwidget.style().standardIcon(QStyle.SP_MediaPause))
         self.status = Video_controller_window.STATUS_PLAYING
 
@@ -118,7 +119,7 @@ class Video_controller_window(Ui_Monitor):
         if self.video_url == "" or self.video_url is None:
             return
         if self.playCapture.isOpened():
-            self.timer.stop()
+            self.Video_timer.stop()
             if self.video_type is Video_controller_window.VIDEO_TYPE_REAL_TIME:
                 self.playCapture.release()
                 cv2.destroyAllWindows()
@@ -131,7 +132,7 @@ class Video_controller_window(Ui_Monitor):
         self.playCapture.release()
         cv2.destroyAllWindows()
         self.playCapture.open(self.video_url)
-        self.timer.start()
+        self.Video_timer.start()
         self.Run_OCR.setIcon(self.centralwidget.style().standardIcon(QStyle.SP_MediaPause))
         self.status = Video_controller_window.STATUS_PLAYING
 
@@ -165,10 +166,10 @@ class Video_controller_window(Ui_Monitor):
             return
         if self.status is Video_controller_window.STATUS_INIT:
             self.playCapture.open(self.video_url)
-            self.timer.start()
+            self.Video_timer.start()
             self.Run_OCR.setIcon(self.centralwidget.style().standardIcon(QStyle.SP_MediaPause))
         elif self.status is Video_controller_window.STATUS_PLAYING:
-            self.timer.stop()
+            self.Video_timer.stop()
             if self.video_type is Video_controller_window.VIDEO_TYPE_REAL_TIME:
                 self.playCapture.release()
                 cv2.destroyAllWindows()
@@ -176,16 +177,12 @@ class Video_controller_window(Ui_Monitor):
         elif self.status is Video_controller_window.STATUS_PAUSE:
             if self.video_type is Video_controller_window.VIDEO_TYPE_REAL_TIME:
                 self.playCapture.open(self.video_url)
-            self.timer.start()
+            self.Video_timer.start()
             self.Run_OCR.setIcon(self.centralwidget.style().standardIcon(QStyle.SP_MediaPause))
 
         self.status = (Video_controller_window.STATUS_PLAYING,
                        Video_controller_window.STATUS_PAUSE,
                        Video_controller_window.STATUS_PLAYING)[self.status]
-
-
-class Communicate(QObject):
-    signal = pyqtSignal(str)
 
 
 class VideoTimer(QThread):
@@ -194,7 +191,7 @@ class VideoTimer(QThread):
         QThread.__init__(self)
         self.stopped = False
         self.frequent = frequent
-        self.timeSignal = Communicate()
+        self.Video_timeSignal = Communicate()
         self.mutex = QMutex()
 
     def run(self):
@@ -203,7 +200,7 @@ class VideoTimer(QThread):
         while True:
             if self.stopped:
                 return
-            self.timeSignal.signal.emit("1")
+            self.Video_timeSignal.signal.emit("1")
             time.sleep(1 / self.frequent)
 
     def stop(self):

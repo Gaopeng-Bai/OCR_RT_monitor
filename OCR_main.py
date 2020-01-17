@@ -19,7 +19,7 @@ from PyQt5.QtWidgets import *
 from Video_operation.video_box import Video_controller_window as VideoWindow
 from Video_operation.pdf_to_image import pdf_to_image
 from Video_operation.setpdf_position import pdf_label
-from Video_operation.Signal_creator import Communicate
+from Video_operation.pdf_fill import fill_data_in_pdf
 
 from GUI.box_manager import Ui_UI_box_manager
 from GUI.image_GUI import Ui_Form
@@ -71,6 +71,10 @@ class OCR_main(QWidget, VideoWindow):
         self.pdf_position_reset.clicked.connect(self.delete_all_position)
         self.pdf_position_reset.setToolTip('Click to delete all position')
 
+        self.run_program.clicked.connect(self.run_program_)
+        self.run_program.setToolTip("Click to run program according to the timer")
+
+        # init position entry.
         self.PositionX.setReadOnly(True)
         self.PositionY.setReadOnly(True)
         self.refresh_boxes_to_output()
@@ -78,6 +82,30 @@ class OCR_main(QWidget, VideoWindow):
         # init combobox
         self.init_position()
         self.boxes.currentIndexChanged.connect(self.init_position)
+
+        self.init_spinbox()
+
+    # def run_program_(self):
+    #     value = self.timer_output.value()
+    #     self.timer = QTimer(self)  # init a timer
+    #     self.timer.timeout.connect(self.operate)  #
+    #     self.timer.start(value*1000*60)  #
+
+    def run_program_(self):
+        mw.pictureLabel.pick_screencut()
+        position = {'position_x': [], 'position_y': []}
+        data = []
+
+        for key in mw.pictureLabel.output_dic:
+            if key in self.combine:
+                position['position_x'].append(self.combine[key][0])
+                position['position_y'].append(self.combine[key][1])
+                data.append(mw.pictureLabel.output_dic[key])
+
+        fill_data_in_pdf(position, data_to_fill=data, original_pdf=self.fileName_choose)
+
+    def init_spinbox(self):
+        self.timer_output.setMaximum(1000)
 
     def delete_all_position(self):
         self.combine.clear()
@@ -123,16 +151,16 @@ class OCR_main(QWidget, VideoWindow):
             self.boxes.addItem(str(i))
 
     def pick_up_output_file(self):
-        fileName_choose, _ = QFileDialog.getOpenFileName(self,
+        self.fileName_choose, _ = QFileDialog.getOpenFileName(self,
                                                          "Choose PDF file",
                                                          self.cwd,  # start path
                                                          "Text Files (*.pdf)")
-        if fileName_choose == "":
+        if self.fileName_choose == "":
             QMessageBox.about(None, "No file chosen", "Please try again")
         else:
-            self.get_path = self.pdftoimage.run_convert(fileName_choose, 0)
+            self.get_path = self.pdftoimage.run_convert(self.fileName_choose, 0)
             ex.change_path(self.get_path)
-            self.PDF_file_name.setText(fileName_choose)
+            self.PDF_file_name.setText(self.fileName_choose)
 
     @staticmethod
     def Box_manager_window():
@@ -224,7 +252,7 @@ class Box_manager_widget(QWidget, Ui_UI_box_manager):
                 a = get_keys(mw.pictureLabel.videobox, self.item_chosen)
                 mw.pictureLabel.videobox.pop(a)
                 if a in mw.combine:
-                    mw.combine.videobox.pop(a)
+                    mw.combine.pop(a)
                     mw.save_box_to_local()
 
                 mw.pictureLabel.delete_box_image(str(a) + '.png')

@@ -51,18 +51,3 @@ def fill_data_in_pdf(position: object, data_to_fill, original_pdf="haha.pdf",
     outputStream = open(destination_pdf, "wb")
     output.write(outputStream)
     outputStream.close()
-
-
-if __name__ == '__main__':
-    position = {'position_x': [], 'position_y': []}
-    data = []
-    position['position_x'].append('315')
-    position['position_y'].append('650')
-    data.append('555')
-    position['position_x'].append('410')
-    position['position_y'].append('650')
-    data.append('222')
-    position['position_x'].append('410')
-    position['position_y'].append('625')
-    data.append('000')
-    fill_data_in_pdf(position, data_to_fill=data)
