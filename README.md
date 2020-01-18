@@ -1,2 +1,2 @@
-# pyqt5-opencv-video
-pyqt5 + opencv 实现视频播放，支持实时流，支持远程文件
+# OCR-Video-Automation
+This project extracts the picture area at the specified position in the video, recognizes the characters in the image and prints to the specified position in the pdf file.
