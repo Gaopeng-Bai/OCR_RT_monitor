@@ -197,7 +197,6 @@ class Box_manager_widget(QWidget, Ui_UI_box_manager):
         self.delete_box.clicked.connect(self.delete_box_)
         self.Change_box_name.setToolTip('Change the name of item, shortcut key "F2"')
         self.Change_box_name.clicked.connect(self.change_box_name_)
-        self.Change_box_name.setShortcut('F2')  # shortcut key
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Delete:
