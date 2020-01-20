@@ -10,7 +10,7 @@
 @desc:
 """
 try:
-    from PIL import Image
+    from PIL import Image, ImageFilter
 except ImportError:
     import Image
 import pytesseract
@@ -23,6 +23,12 @@ def ocr_core(filename):
     # noise filter, and convert to gray image
     im = Image.open(filename)
     im = im.convert('L')
+    # im = im.filter(ImageFilter.EDGE_ENHANCE)
+    # im.show()
     text = pytesseract.image_to_string(im)  # We'll use Pillow's Image class to open the image and pytesseract to
     # detect the string in the image
     return text
+
+
+if __name__ == "__main__":
+    print("test : "+ocr_core("../1.png"))
