@@ -129,6 +129,7 @@ class OCR_main(QWidget, VideoWindow):
                 position['position_x'].append(self.combine[key][0])
                 position['position_y'].append(self.combine[key][1])
                 data.append(mw.pictureLabel.output_dic[key])
+                print(key+"OCR :"+mw.pictureLabel.output_dic[key])
 
         fill_data_in_pdf(position, data_to_fill=data, original_pdf=self.fileName_choose)
         if self.test:
