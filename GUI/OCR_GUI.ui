@@ -246,6 +246,13 @@
               </property>
              </spacer>
             </item>
+            <item row="2" column="2">
+             <widget class="QPushButton" name="test">
+              <property name="text">
+               <string>Test</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </item>
           <item>

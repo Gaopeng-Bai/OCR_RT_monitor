@@ -94,7 +94,7 @@ class myLabel(QLabel):
             # for test
             pixmap2.save(str(key) + '.png')
             self.output_dic[str(key)] = self.recognition(str(key) + '.png')
-            # self.delete_box_image(str(key) + '.png')
+            self.delete_box_image(str(key) + '.png')
 
     @staticmethod
     def recognition(path):

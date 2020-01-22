@@ -12,6 +12,9 @@
 import sys
 import os
 import cv2
+import threading
+from multiprocessing import Process
+
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -20,6 +23,8 @@ from Video_operation.video_box import Video_controller_window as VideoWindow
 from Video_operation.pdf_to_image import pdf_to_image
 from Video_operation.setpdf_position import pdf_label
 from Video_operation.pdf_fill import fill_data_in_pdf
+
+from Remote_connection.Server import Client, RUn_server
 
 from GUI.box_manager import Ui_UI_box_manager
 from GUI.image_GUI import Ui_Form
@@ -38,6 +43,11 @@ def get_keys(d, value):
         for i in v:
             if str(i) == str(value):
                 return k
+
+
+def persent_pdf():
+    import webbrowser
+    webbrowser.open('destination.pdf')
 
 
 class OCR_main(QWidget, VideoWindow):
@@ -59,6 +69,8 @@ class OCR_main(QWidget, VideoWindow):
         self.GUi_init_setting()
         self.pictureLabel.box_refresh_signal.signal[str].connect(self.refresh_boxes_to_output)
 
+        self.test = bool
+
     def GUi_init_setting(self):
         self.menuSetting.triggered[QAction].connect(self.Box_manager_window)
         self.menuSetting.setToolTip('To change the boxes information')
@@ -74,6 +86,8 @@ class OCR_main(QWidget, VideoWindow):
         self.run_program.clicked.connect(self.run_program_)
         self.run_program.setToolTip("Click to run program according to the timer")
 
+        self.test.clicked.connect(self.run_program_test)
+
         # init position entry.
         self.PositionX.setReadOnly(True)
         self.PositionY.setReadOnly(True)
@@ -85,13 +99,27 @@ class OCR_main(QWidget, VideoWindow):
 
         self.init_spinbox()
 
-    # def run_program_(self):
-    #     value = self.timer_output.value()
-    #     self.timer = QTimer(self)  # init a timer
-    #     self.timer.timeout.connect(self.operate)  #
-    #     self.timer.start(value*1000*60)  #
-
     def run_program_(self):
+        """
+        set a timer to run this program automatically in specific time period.
+        :return:
+        """
+        self.test = False
+        value = self.timer_output.value()
+        self.timer = QTimer(self)  # init a timer
+        self.timer.timeout.connect(self.operate)  #
+        self.timer.start(value * 1000 * 60)  #
+
+    def run_program_test(self):
+        """
+        run this program manually and remotely, receiver a signal form client then present the results pdf file.
+        :return:
+        """
+        # init signal form server
+        RUn_server(function=self.operate)
+        self.test = True
+
+    def operate(self):
         mw.pictureLabel.pick_screencut()
         position = {'position_x': [], 'position_y': []}
         data = []
@@ -103,6 +131,17 @@ class OCR_main(QWidget, VideoWindow):
                 data.append(mw.pictureLabel.output_dic[key])
 
         fill_data_in_pdf(position, data_to_fill=data, original_pdf=self.fileName_choose)
+        if self.test:
+            import subprocess
+            chrome_path = 'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe'
+            p = subprocess.Popen(
+                [chrome_path, "destination.pdf"])  # This uses 'Subprocess' to open the file
+            returncode = p.wait()  # This waits for the process to close
+            print(returncode)
+            # Create new thread to wait for connections
+            # self.test_present_pdf = Process(target=persent_pdf)
+            # self.test_present_pdf.start()
+            # self.test_present_pdf.join()
 
     def init_spinbox(self):
         self.timer_output.setMaximum(1000)
@@ -152,9 +191,9 @@ class OCR_main(QWidget, VideoWindow):
 
     def pick_up_output_file(self):
         self.fileName_choose, _ = QFileDialog.getOpenFileName(self,
-                                                         "Choose PDF file",
-                                                         self.cwd,  # start path
-                                                         "Text Files (*.pdf)")
+                                                              "Choose PDF file",
+                                                              self.cwd,  # start path
+                                                              "Text Files (*.pdf)")
         if self.fileName_choose == "":
             QMessageBox.about(None, "No file chosen", "Please try again")
         else:
