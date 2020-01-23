@@ -11,7 +11,7 @@
 """
 # -*- coding: utf-8 -*-
 import io
-
+import os
 from wand.image import Image
 from wand.color import Color
 from PyPDF2 import PdfFileReader, PdfFileWriter
@@ -43,8 +43,22 @@ def _run_convert(filename, page, res=120):
     img.compression_quality = 100
     img.background_color = Color("white")
     img_path = '%s%d.png' % (filename[:filename.rindex('.')], idx)
+    if sys.path.
     img.save(filename=img_path)
     img.destroy()
+
+def find_file(keyword, root):
+    filelist = []
+    for root, dirs, files in os.walk(root):
+        for name in files:
+            filelist.append(os.path.join(root, name))
+    for i in filelist:
+        if os.path.isfile(i):
+            if keyword in os.path.split(i)[1]:
+                return i
+            # else:
+            # print('......no keyword!')
+
 
 
 if __name__ == '__main__':

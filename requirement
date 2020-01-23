@@ -1,0 +1,7 @@
+python 3.6
+
+pyqt5, pyqt5-tools
+opencv-python
+pytesseract, (dependence pytesseract.exe on os)
+PyPDF2
+wand, (dependence ImageMagick.exe and (Ghostscript.exe)on os)
