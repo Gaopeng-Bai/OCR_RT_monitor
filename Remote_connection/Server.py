@@ -57,6 +57,7 @@ class Client(QtCore.QThread):
 def newConnections(socket, function):
     while True:
         sock, address = socket.accept()
+        print("socket:" + sock + "address:" + address)
         global total_connections
         connections.append(Client(sock, address, total_connections, "Name", True, func=function))
         connections[len(connections) - 1].start()
@@ -73,5 +74,5 @@ def RUn_server(function=None):
     sock.listen(5)
 
     # Create new thread to wait for connections
-    newConnectionsThread = QtCore.QThread()
+    newConnectionsThread = threading.Thread(target=newConnections, args=(sock, function))
     newConnectionsThread.start()

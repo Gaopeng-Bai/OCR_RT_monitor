@@ -1,7 +1,12 @@
-python 3.6
-
-pyqt5, pyqt5-tools
+Python  3.6
+# GUI
+Pyqt5
+pyqt5-tools
+# PDF file and image processing operation
 opencv-python
-pytesseract, (dependence pytesseract.exe on os)
+Wand 0.5.8
 PyPDF2
-wand, (dependence ImageMagick.exe and (Ghostscript.exe)on os)
+reportlab
+
+# recognize
+pytesseract
