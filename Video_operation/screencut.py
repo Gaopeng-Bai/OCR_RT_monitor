@@ -13,6 +13,7 @@ from PyQt5.QtWidgets import QLabel
 from PyQt5.QtCore import *
 from PyQt5.QtGui import QPainter, QPen, QGuiApplication
 from Video_operation.Rcongnition import ocr_core
+from Video_operation.Signal_creator import Communicate
 
 from six.moves import cPickle
 import os
@@ -31,6 +32,7 @@ class myLabel(QLabel):
     def __init__(self, func, path="resource"):
         super().__init__()
         # callback function to interact between qt input dialog and paintevent.
+        self.output_dic = {}
         self.function = func
         self.box_refresh_signal = Communicate()
         # The box info save path.
@@ -70,8 +72,6 @@ class myLabel(QLabel):
             self.save_box_to_local()
             self.box_refresh_signal.signal.emit("1")
 
-            self.pick_screencut(self.videobox)
-
     def save_box_to_local(self):
         save_dict = dict(zip(self.videobox.keys(), self.videobox.values()))
         with open(self.file_path, 'wb') as f:
@@ -80,23 +80,22 @@ class myLabel(QLabel):
     def box_clear(self):
         self.videobox.clear()
 
-    def delete_box_image(self, path):
+    @staticmethod
+    def delete_box_image(path):
         if os.path.exists(path):
             os.remove(path)
 
-    def pick_screencut(self, dic):
-        for key in dic:
+    def pick_screencut(self):
+        for key in self.videobox:
             pqscreen = QGuiApplication.primaryScreen()
-            pixmap2 = pqscreen.grabWindow(self.winId(), dic[key][0], dic[key][2], abs(dic[key][1] - dic[key][0]),
-                                          abs(dic[key][3] - dic[key][2]))
+            pixmap2 = pqscreen.grabWindow(self.winId(), self.videobox[key][0], self.videobox[key][2],
+                                          abs(self.videobox[key][1] - self.videobox[key][0]),
+                                          abs(self.videobox[key][3] - self.videobox[key][2]))
             # for test
             pixmap2.save(str(key) + '.png')
-            self.recognition(str(key) + '.png')
+            self.output_dic[str(key)] = self.recognition(str(key) + '.png')
+            self.delete_box_image(str(key) + '.png')
 
     @staticmethod
     def recognition(path):
-        print("Test: " + ocr_core(path))
-
-
-class Communicate(QObject):
-    signal = pyqtSignal(str)
+        return ocr_core(path)

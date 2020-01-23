@@ -11,12 +11,24 @@
 """
 # -*- coding: utf-8 -*-
 import io
-import os
+
 from wand.image import Image
 from wand.color import Color
 from PyPDF2 import PdfFileReader, PdfFileWriter
+import os
 
 memo = {}
+
+
+def delete_file(keyword, root):
+    filelist = []
+    for root, dirs, files in os.walk(root):
+        for name in files:
+            filelist.append(os.path.join(root, name))
+    for i in filelist:
+        if os.path.isfile(i):
+            if keyword in os.path.split(i)[1]:
+                os.remove(i)
 
 
 def getPdfReader(filename):
@@ -27,39 +39,27 @@ def getPdfReader(filename):
     return reader
 
 
-def _run_convert(filename, page, res=120):
-    idx = page + 1
-    pdfile = getPdfReader(filename)
-    pageObj = pdfile.getPage(page)
-    dst_pdf = PdfFileWriter()
-    dst_pdf.addPage(pageObj)
+class pdf_to_image:
 
-    pdf_bytes = io.BytesIO()
-    dst_pdf.write(pdf_bytes)
-    pdf_bytes.seek(0)
+    def run_convert(self, filename, page, res=120):
+        # idx = page + 1
+        pdfile = getPdfReader(filename)
+        pageObj = pdfile.getPage(page)
+        dst_pdf = PdfFileWriter()
+        dst_pdf.addPage(pageObj)
 
-    img = Image(file=pdf_bytes, resolution=res)
-    img.format = 'png'
-    img.compression_quality = 100
-    img.background_color = Color("white")
-    img_path = '%s%d.png' % (filename[:filename.rindex('.')], idx)
-    if sys.path.
-    img.save(filename=img_path)
-    img.destroy()
+        pdf_bytes = io.BytesIO()
+        dst_pdf.write(pdf_bytes)
+        pdf_bytes.seek(0)
 
-def find_file(keyword, root):
-    filelist = []
-    for root, dirs, files in os.walk(root):
-        for name in files:
-            filelist.append(os.path.join(root, name))
-    for i in filelist:
-        if os.path.isfile(i):
-            if keyword in os.path.split(i)[1]:
-                return i
-            # else:
-            # print('......no keyword!')
+        img = Image(file=pdf_bytes, resolution=res)
+        img.format = 'png'
+        img.compression_quality = 100
+        img.background_color = Color("white")
+        filename = filename.split("/")[-1]
+        img_path = '%s%s.png' % (filename[:filename.rindex('.')], "temp")
+        delete_file("temp", root='.')
+        img.save(filename=img_path)
+        img.destroy()
 
-
-
-if __name__ == '__main__':
-    _run_convert('example.pdf', 0)
+        return img_path

@@ -11,23 +11,24 @@
 """
 # coding=utf-8
 
-from PyQt5.QtWidgets import QWidget, QApplication, QLabel
 from PyQt5.QtCore import QRect, Qt
-from PyQt5.QtGui import QImage, QPixmap, QPainter, QPen, QGuiApplication
-import cv2
-import sys
+from PyQt5.QtGui import QPainter, QPen
+from PyQt5.QtWidgets import QLabel
+
+from Video_operation.Signal_creator import Communicate
 
 
-class myLabel(QLabel):
+class pdf_label(QLabel):
     x0 = 0
     y0 = 0
     x1 = 0
     y1 = 0
     flag = False
 
-    def __init__(self, callback_position_confirm):
+    def __init__(self, callback_empty_painter):
         super().__init__()
-        self.callback_position_confirm = callback_position_confirm
+        self.button_signal = Communicate()
+        self.callback_empty_painter = callback_empty_painter
 
     def mousePressEvent(self, event):
         if event.buttons() == Qt.LeftButton:  #
@@ -37,7 +38,9 @@ class myLabel(QLabel):
         elif event.buttons() == Qt.RightButton:  #
             self.flag = False
             if self.x0 != 0 and self.y0 != 0:
-                self.callback_position_confirm()
+                self.button_signal.signal.emit("1")
+            else:
+                self.callback_empty_painter()
 
     def mouseReleaseEvent(self, event):
         self.flag = False
@@ -59,35 +62,3 @@ class myLabel(QLabel):
 
         return int((self.x0+(self.x1-self.x0)/2-133+127)*96/162), \
                int((1470-(self.y0+(self.y1-self.y0)/2+462))*595/982+230)
-
-
-class PDF_image(QWidget):
-    def __init__(self, path='example1.png'):
-        super().__init__()
-        self.path = path
-        self.initUI()
-
-    def initUI(self):
-        self.resize(980, 2000)
-        self.setWindowTitle('Position caption from image')
-
-        self.lb = myLabel(self)
-        self.lb.setGeometry(QRect(0, 0, 1000, 1400))
-
-        img = cv2.imread(self.path)
-        height, width, bytesPerComponent = img.shape
-        bytesPerLine = 3 * width
-        cv2.cvtColor(img, cv2.COLOR_BGR2RGB, img)
-        QImg = QImage(img.data, width, height, bytesPerLine, QImage.Format_RGB888)
-        pixmap = QPixmap.fromImage(QImg)
-
-        self.lb.setPixmap(pixmap)
-        self.lb.setCursor(Qt.CrossCursor)
-
-        self.show()
-
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    ex = PDF_image()
-    sys.exit(app.exec_())
