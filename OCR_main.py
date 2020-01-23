@@ -133,9 +133,8 @@ class OCR_main(QWidget, VideoWindow):
 
         fill_data_in_pdf(position, data_to_fill=data, original_pdf=self.fileName_choose)
         if self.test:
-            import subprocess
             chrome_path = 'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe'
-            p = subprocess.Popen(
+            p = os.Popen(
                 [chrome_path, "destination.pdf"])  # This uses 'Subprocess' to open the file
             returncode = p.wait()  # This waits for the process to close
             print(returncode)

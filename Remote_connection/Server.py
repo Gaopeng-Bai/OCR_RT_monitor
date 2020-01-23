@@ -13,6 +13,8 @@ import socket
 import threading
 
 # Variables for holding information about connections
+from PyQt5 import QtCore
+
 connections = []
 total_connections = 0
 
@@ -20,13 +22,12 @@ total_connections = 0
 # Client class, new instance created for each connected client
 # Each instance has the socket and address that is associated with items
 # Along with an assigned ID and a name chosen by the client
-class Client(threading.Thread):
+class Client(QtCore.QThread):
     def __init__(self, socket, address, id, name, signal, func):
         threading.Thread.__init__(self)
         self.socket = socket
         self.address = address
         self.id = id
-        self.name = name
         self.signal = signal
         self.callback_receive = func
 
@@ -64,9 +65,6 @@ def newConnections(socket, function):
 
 
 def RUn_server(function=None):
-    # Get host and port
-    # host = input("Host: ")
-    # port = int(input("Port: "))
 
     # Create new server socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -75,5 +73,5 @@ def RUn_server(function=None):
     sock.listen(5)
 
     # Create new thread to wait for connections
-    newConnectionsThread = threading.Thread(target=newConnections, args=(sock, function,))
+    newConnectionsThread = QtCore.QThread()
     newConnectionsThread.start()
