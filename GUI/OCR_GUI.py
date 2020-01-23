@@ -207,7 +207,7 @@ class Ui_Monitor(object):
         self.label_3.setText(_translate("Monitor", "Output file"))
         self.label_6.setText(_translate("Monitor", "Set  digital  timer"))
         self.run_program.setText(_translate("Monitor", "Run"))
-        self.test.setText(_translate("Monitor", "Test"))
+        self.test.setText(_translate("Monitor", "Server"))
         self.ChoosePDFbutton.setText(_translate("Monitor", "Choose PDF file"))
         self.pdf_position_set.setText(_translate("Monitor", "Set"))
         self.pdf_position_reset.setText(_translate("Monitor", "Reset"))

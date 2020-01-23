@@ -5,26 +5,40 @@
 @license: (C) Copyright 2016-2020, Node Supply Chain Manager Corporation Limited.
 @contact: gaopengbai0121@gmail.com
 @software: Pycharm
+@file: server_qthreaad.py
+@time: 1/23/2020 3:19 PM
+@desc:
+"""
+#!/usr/bin/env python
+# encoding: utf-8
+"""
+@author: Gaopeng
+@license: (C) Copyright 2016-2020, Node Supply Chain Manager Corporation Limited.
+@contact: gaopengbai0121@gmail.com
+@software: Pycharm
 @file: Server.py
 @time: 1/21/2020 6:36 PM
 @desc:
 """
 import socket
 import threading
-from PyQt5 import QtCore
 
-# Variables for holding information about connections
+
+from PyQt5.QtCore import QThread, pyqtSignal
+
 
 # Client class, new instance created for each connected client
 # Each instance has the socket and address that is associated with items
 # Along with an assigned ID and a name chosen by the client
+# Variables for holding information about connections
 
 
-class Client(threading.Thread):
-    def __init__(self, socket, func):
-        threading.Thread.__init__(self)
+class Client(QThread):
+    receive = pyqtSignal(str)
+
+    def __init__(self, socket, parent=None):
+        super(Client, self).__init__(parent)
         self.socket = socket
-        self.callback_receive = func
 
     # Attempt to get data from client
     # If unable to, assume client has disconnected and remove him from server data
@@ -43,7 +57,7 @@ class Client(threading.Thread):
                 if data != "" and data != b'':
                     if str(data.decode("utf-8")) == "on":
                         print("run program")
-                        # self.callback_receive()
+                        self.receive.emit("on")
 
 
 def RUn_server(function=None):
@@ -53,8 +67,14 @@ def RUn_server(function=None):
     print(sock.getsockname())
     sock.listen(5)
 
-    # Create new thread to wait for connections
-    # newConnectionsThread = threading.Thread(target=newConnections, args=(sock, function))
-    client_thread = Client(sock, func=function)
+    client_thread = Client(socket=sock)
+    client_thread.receive.connect(test)
     client_thread.start()
 
+
+def test(info):
+    print(info)
+    print(0)
+
+
+RUn_server(function=test)

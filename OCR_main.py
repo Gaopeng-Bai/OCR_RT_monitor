@@ -9,27 +9,25 @@
 @time: 1/7/2020 11:56 AM
 @desc:
 """
-import sys
 import os
-import cv2
-import threading
-from multiprocessing import Process
+import sys
 
+import cv2
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-
-from Video_operation.video_box import Video_controller_window as VideoWindow
-from Video_operation.pdf_to_image import pdf_to_image
-from Video_operation.setpdf_position import pdf_label
-from Video_operation.pdf_fill import fill_data_in_pdf
-
-from Remote_connection.Server import Client, RUn_server
+from six.moves import cPickle
 
 from GUI.box_manager import Ui_UI_box_manager
 from GUI.image_GUI import Ui_Form
 
-from six.moves import cPickle
+# from Remote_connection.Server import RUn_server
+from Remote_connection.server_qthreaad import RUn_server
+
+from Video_operation.pdf_fill import fill_data_in_pdf
+from Video_operation.pdf_to_image import pdf_to_image
+from Video_operation.setpdf_position import pdf_label
+from Video_operation.video_box import Video_controller_window as VideoWindow
 
 
 def get_keys(d, value):
@@ -116,8 +114,8 @@ class OCR_main(QWidget, VideoWindow):
         :return:
         """
         # init signal form server
-        RUn_server(function=self.operate)
         self.test = True
+        RUn_server(self.operate)
 
     def operate(self):
         mw.pictureLabel.pick_screencut()
@@ -129,19 +127,25 @@ class OCR_main(QWidget, VideoWindow):
                 position['position_x'].append(self.combine[key][0])
                 position['position_y'].append(self.combine[key][1])
                 data.append(mw.pictureLabel.output_dic[key])
-                print(key+"OCR :"+mw.pictureLabel.output_dic[key])
+        if self.PDF_file_name != "":
+            fill_data_in_pdf(position, data_to_fill=data, original_pdf=self.fileName_choose)
+        else:
+            QMessageBox.about(None, "No file chosen", "Please pick a pdf file first")
 
-        fill_data_in_pdf(position, data_to_fill=data, original_pdf=self.fileName_choose)
         if self.test:
-            chrome_path = 'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe'
-            p = os.Popen(
-                [chrome_path, "destination.pdf"])  # This uses 'Subprocess' to open the file
-            returncode = p.wait()  # This waits for the process to close
-            print(returncode)
+            self.present_pdf_()
             # Create new thread to wait for connections
-            # self.test_present_pdf = Process(target=persent_pdf)
+            # self.test_present_pdf = threading.Thread(target=self.present_pdf_)
             # self.test_present_pdf.start()
             # self.test_present_pdf.join()
+
+    def present_pdf_(self):
+        import subprocess
+        chrome_path = 'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe'
+        p = subprocess.Popen(
+            [chrome_path, "destination.pdf"])  # This uses 'Subprocess' to open the file
+        returncode = p.wait()  # This waits for the process to close
+        print(returncode)
 
     def init_spinbox(self):
         self.timer_output.setMaximum(1000)
