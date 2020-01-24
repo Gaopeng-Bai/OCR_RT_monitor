@@ -43,7 +43,7 @@ class Client(threading.Thread):
                 if data != "" and data != b'':
                     if str(data.decode("utf-8")) == "on":
                         print("run program")
-                        # self.callback_receive()
+                        self.callback_receive()
 
 
 def RUn_server(function=None):
@@ -51,7 +51,7 @@ def RUn_server(function=None):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.bind(("localhost", 80))
     print(sock.getsockname())
-    sock.listen(5)
+    sock.listen(1)
 
     # Create new thread to wait for connections
     # newConnectionsThread = threading.Thread(target=newConnections, args=(sock, function))

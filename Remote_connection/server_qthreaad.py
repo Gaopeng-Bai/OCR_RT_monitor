@@ -36,8 +36,8 @@ from PyQt5.QtCore import QThread, pyqtSignal
 class Client(QThread):
     receive = pyqtSignal(str)
 
-    def __init__(self, socket, parent=None):
-        super(Client, self).__init__(parent)
+    def __init__(self, socket):
+        super(Client, self).__init__()
         self.socket = socket
 
     # Attempt to get data from client
@@ -57,7 +57,7 @@ class Client(QThread):
                 if data != "" and data != b'':
                     if str(data.decode("utf-8")) == "on":
                         print("run program")
-                        self.receive.emit("on")
+                        self.receive.emit()
 
 
 def RUn_server(function=None):
@@ -65,7 +65,7 @@ def RUn_server(function=None):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.bind(("localhost", 80))
     print(sock.getsockname())
-    sock.listen(5)
+    sock.listen(1)
 
     client_thread = Client(socket=sock)
     client_thread.receive.connect(test)
@@ -75,6 +75,3 @@ def RUn_server(function=None):
 def test(info):
     print(info)
     print(0)
-
-
-RUn_server(function=test)

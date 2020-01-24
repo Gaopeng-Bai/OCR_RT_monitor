@@ -9,6 +9,7 @@
 @time: 1/7/2020 12:18 PM
 @desc: Manually draw a rect box that need to be recognised by using mouse events.
 """
+import pyautogui
 from PyQt5.QtWidgets import QLabel
 from PyQt5.QtCore import *
 from PyQt5.QtGui import QPainter, QPen, QGuiApplication
@@ -91,8 +92,13 @@ class myLabel(QLabel):
             pixmap2 = pqscreen.grabWindow(self.winId(), self.videobox[key][0], self.videobox[key][2],
                                           abs(self.videobox[key][1] - self.videobox[key][0]),
                                           abs(self.videobox[key][3] - self.videobox[key][2]))
+
+            # img = pyautogui.screenshot(region=[self.videobox[key][0], self.videobox[key][2],
+            #                                    abs(self.videobox[key][1] - self.videobox[key][0]),
+            #                                    abs(self.videobox[key][3] - self.videobox[key][2])])
             # for test
             pixmap2.save(str(key) + '.png')
+            # img.save(str(key) + '.png')
             self.output_dic[str(key)] = self.recognition(str(key) + '.png')
             self.delete_box_image(str(key) + '.png')
 
