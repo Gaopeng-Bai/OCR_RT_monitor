@@ -74,8 +74,21 @@ class OCR_main(QWidget, VideoWindow):
         self.test = bool
 
     def GUi_init_setting(self):
-        self.menuSetting.triggered[QAction].connect(self.Box_manager_window)
+        # setting menu action.
         self.menuSetting.setToolTip('To change the boxes information')
+        self.actionBox_manage.triggered.connect(self.Box_manager_window)
+
+        self.actionLocal_Camera.triggered.connect(self.local_camera)
+        self.actionRemote_Camera.triggered.connect(self.remote_camera)
+
+        # set remote camera parameters.
+        self.IP_entry.setReadOnly(True)
+        self.Port_entry.setReadOnly(True)
+        self.IP_entry.setInputMask('000.000.000.000;_')
+        self.Port_entry.setInputMask('00000')
+
+        # remote camera operated button.
+        self.Connect_cam.clicked.connect(self.remote_cam_connect)
 
         # click to open file dialog
         self.ChoosePDFbutton.clicked.connect(self.pick_up_output_file)
@@ -101,6 +114,24 @@ class OCR_main(QWidget, VideoWindow):
 
         self.init_spinbox()
 
+    def remote_cam_connect(self):
+        ip = self.IP_entry.text()
+        port = self.Port_entry.text()
+        if ip != '' and port != '':
+            print("url is")
+            # mw.set_video(url, self.VIDEO_TYPE_REAL_TIME, True)
+        else:
+            QMessageBox.about(None, "No cam Info", "Please tap in IP and Port first")
+
+    def local_camera(self):
+        self.IP_entry.setReadOnly(True)
+        self.Port_entry.setReadOnly(True)
+        mw.set_video(0, self.VIDEO_TYPE_REAL_TIME, True)
+
+    def remote_camera(self):
+        self.IP_entry.setReadOnly(False)
+        self.Port_entry.setReadOnly(False)
+
     def run_program_(self):
         """
         set a timer to run this program automatically in specific time period.
@@ -119,8 +150,8 @@ class OCR_main(QWidget, VideoWindow):
         """
         # init signal form server
         self.test = True
-
-        RUn_server(self.operate)
+        self.operate()
+        # RUn_server(self.operate)
 
     def operate(self):
         self.pictureLabel.pick_screencut()

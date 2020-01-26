@@ -9,7 +9,7 @@
 @time: 1/7/2020 12:18 PM
 @desc: Manually draw a rect box that need to be recognised by using mouse events.
 """
-import pyautogui
+# import pyautogui
 from PyQt5.QtWidgets import QLabel
 from PyQt5.QtCore import *
 from PyQt5.QtGui import QPainter, QPen, QGuiApplication
