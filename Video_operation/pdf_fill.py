@@ -11,14 +11,14 @@
 
 import io
 import os
-
+import time
 from PyPDF2 import PdfFileWriter, PdfFileReader
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 
 
 def fill_data_in_pdf(position: object, data_to_fill, original_pdf="haha.pdf",
-                     destination_pdf="destination.pdf"):
+                     destination_pdf="Output/destination"):
     """
     Function fill data into specific position of original pdf, generate new pdf file with data filled.
     @param position: a dictionary described the positions 2-dim (x, y) that Each parameter(eg.. x) represent as a list.
@@ -47,7 +47,11 @@ def fill_data_in_pdf(position: object, data_to_fill, original_pdf="haha.pdf",
     page = existing_pdf.getPage(0)
     page.mergePage(new_pdf.getPage(0))
     output.addPage(page)
-    # finally, write "output" to a real file
+    # finally, write "output" to a real
+    current = time.strftime('%Y-%m-%d_%H-%M-%S', time.localtime(time.time()))
+    destination_pdf = destination_pdf+'_'+current+'.pdf'
     outputStream = open(destination_pdf, "wb")
     output.write(outputStream)
     outputStream.close()
+
+    return destination_pdf

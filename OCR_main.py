@@ -20,10 +20,6 @@ from six.moves import cPickle
 
 from GUI.box_manager import Ui_UI_box_manager
 from GUI.image_GUI import Ui_Form
-
-from Remote_connection.Server import RUn_server
-# from Remote_connection.server_qthreaad import RUn_server
-
 from Video_operation.pdf_fill import fill_data_in_pdf
 from Video_operation.pdf_to_image import pdf_to_image
 from Video_operation.setpdf_position import pdf_label
@@ -43,13 +39,10 @@ def get_keys(d, value):
                 return k
 
 
-def present_pdf_():
-    import subprocess
-    chrome_path = 'C:\Program Files (x86)\Google\Chrome\Application\chrome.exe'
-    p = subprocess.Popen(
-        [chrome_path, "destination.pdf"])  # This uses 'Subprocess' to open the file
-    p.wait()  # This waits for the process to close
-    # print(p.wait())
+def present_pdf_(path):
+    import webbrowser
+    path =path.split('/')
+    webbrowser.open(path[0]+'\\'+path[1])
 
 
 class OCR_main(QWidget, VideoWindow):
@@ -78,8 +71,8 @@ class OCR_main(QWidget, VideoWindow):
         self.menuSetting.setToolTip('To change the boxes information')
         self.actionBox_manage.triggered.connect(self.Box_manager_window)
 
-        self.actionLocal_Camera.triggered.connect(self.local_camera)
-        self.actionRemote_Camera.triggered.connect(self.remote_camera)
+        # self.actionLocal_Camera.triggered.connect(self.local_camera)
+        # self.actionRemote_Camera.triggered.connect(self.remote_camera)
 
         # set remote camera parameters.
         self.IP_entry.setReadOnly(True)
@@ -165,12 +158,12 @@ class OCR_main(QWidget, VideoWindow):
                 position['position_y'].append(self.combine[key][1])
                 data.append(self.pictureLabel.output_dic[key])
         if self.PDF_file_name.text() != "":
-            fill_data_in_pdf(position, data_to_fill=data, original_pdf=self.fileName_choose)
+            path = fill_data_in_pdf(position, data_to_fill=data, original_pdf=self.fileName_choose)
         else:
             QMessageBox.about(None, "No file chosen", "Please pick a pdf file first")
 
         if self.test:
-            present_pdf_()
+            present_pdf_(path)
 
     def init_spinbox(self):
         self.timer_output.setMaximum(1000)
