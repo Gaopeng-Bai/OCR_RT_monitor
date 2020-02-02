@@ -24,6 +24,7 @@ from Video_operation.pdf_fill import fill_data_in_pdf
 from Video_operation.pdf_to_image import pdf_to_image
 from Video_operation.setpdf_position import pdf_label
 from Video_operation.video_box import Video_controller_window as VideoWindow
+from Video_operation.Singleinstance import singleinstance
 
 
 def get_keys(d, value):
@@ -412,13 +413,20 @@ class PDF_image(QWidget, Ui_Form):
 
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    mainwindow = QMainWindow()
-    mw = OCR_main(mainWindow=mainwindow)
-    # mw.set_video("resource/video.mp4", VideoBox.VIDEO_TYPE_OFFLINE, False)
-    mw.set_video(0, OCR_main.VIDEO_TYPE_REAL_TIME, True)
-    mainwindow.show()
-    ch = Box_manager_widget()
+    # do this at beginnig of your application
+    myapp = singleinstance()
 
-    ex = PDF_image()
-    sys.exit(app.exec_())
+    # check is another instance of same program running
+    if myapp.aleradyrunning():
+        sys.exit(0)
+    else:
+        app = QApplication(sys.argv)
+        mainwindow = QMainWindow()
+        mw = OCR_main(mainWindow=mainwindow)
+        mw.set_video(0, OCR_main.VIDEO_TYPE_REAL_TIME, True)
+        mainwindow.show()
+        ch = Box_manager_widget()
+
+        ex = PDF_image()
+        sys.exit(app.exec_())
+
