@@ -72,13 +72,13 @@ class OCR_main(QWidget, VideoWindow):
         self.menuSetting.setToolTip('To change the boxes information')
         self.actionBox_manage.triggered.connect(self.Box_manager_window)
 
-        # self.actionLocal_Camera.triggered.connect(self.local_camera)
-        # self.actionRemote_Camera.triggered.connect(self.remote_camera)
+        self.actionLocal_Camera.triggered.connect(self.local_camera)
+        self.actionRemote_Camera.triggered.connect(self.remote_camera)
 
         # set remote camera parameters.
         self.IP_entry.setReadOnly(True)
         self.Port_entry.setReadOnly(True)
-        self.IP_entry.setInputMask('000.000.000.000;_')
+        self.IP_entry.setInputMask('000.000.000.000')
         self.Port_entry.setInputMask('00000')
 
         # remote camera operated button.
@@ -112,8 +112,9 @@ class OCR_main(QWidget, VideoWindow):
         ip = self.IP_entry.text()
         port = self.Port_entry.text()
         if ip != '' and port != '':
-            print("url is")
-            # mw.set_video(url, self.VIDEO_TYPE_REAL_TIME, True)
+            url = "rtsp://"+ip+":"+port+"/h264_ulaw.sdp"
+            print("url is: "+url)
+            mw.set_video(url, self.VIDEO_TYPE_REAL_TIME, True)
         else:
             QMessageBox.about(None, "No cam Info", "Please tap in IP and Port first")
 
@@ -133,9 +134,12 @@ class OCR_main(QWidget, VideoWindow):
         """
         self.test = False
         value = self.timer_output.value()
-        self.timer = QTimer(self)  # init a timer
-        self.timer.timeout.connect(self.operate)  #
-        self.timer.start(value * 1000 * 60)  #
+        if value != '':
+            self.timer = QTimer(self)  # init a timer
+            self.timer.timeout.connect(self.operate)  #
+            self.timer.start(value * 1000 * 60)  #
+        else:
+            QMessageBox.about(None, "Timer empty", "Please fill a number first")
 
     def run_program_test(self):
         """

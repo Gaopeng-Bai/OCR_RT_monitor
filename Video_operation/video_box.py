@@ -99,6 +99,7 @@ class Video_controller_window(Ui_Monitor):
 
     def set_video(self, url, video_type=VIDEO_TYPE_OFFLINE, auto_play=False):
         self.reset()
+        # self.video_url = "rtsp://192.168.43.1:8080/h264_ulaw.sdp"
         self.video_url = url
         self.video_type = video_type
         self.auto_play = auto_play
