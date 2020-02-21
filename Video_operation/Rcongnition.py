@@ -15,6 +15,14 @@ except ImportError:
     import Image
 import pytesseract
 
+threshold = 110
+table = []
+for i in range(256):
+    if i < threshold:
+        table.append(0)
+    else:
+        table.append(1)
+
 
 def ocr_core(filename):
     """
@@ -24,8 +32,10 @@ def ocr_core(filename):
     im = Image.open(filename)
     im = im.convert('L')
     # im = im.filter(ImageFilter.EDGE_ENHANCE)
-    # im.show()
-    text = pytesseract.image_to_string(im)  # We'll use Pillow's Image class to open the image and pytesseract to
+    out = im.point(table, '1')
+    # out.show()
+
+    text = pytesseract.image_to_string(out)  # We'll use Pillow's Image class to open the image and pytesseract to
     # detect the string in the image
     return text
 

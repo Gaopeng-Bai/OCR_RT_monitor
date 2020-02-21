@@ -90,22 +90,29 @@ class Video_controller_window(Ui_Monitor):
         self.Run_OCR.setIcon(self.centralwidget.style().standardIcon(QStyle.SP_MediaPlay))
 
     def set_timer_fps(self):
-        self.playCapture.open(self.video_url)
-        # sometime get fps failed.
-        fps = self.playCapture.get(CAP_PROP_FPS)
-        self.Video_timer.set_fps(24)
-        self.playCapture.release()
-        cv2.destroyAllWindows()
+
+        if self.playCapture.open(self.video_url):
+            # sometime get fps failed.
+            fps = self.playCapture.get(CAP_PROP_FPS)
+            self.Video_timer.set_fps(24)
+            self.playCapture.release()
+            cv2.destroyAllWindows()
+            if self.auto_play:
+                self.switch_video()
+        else:
+            self.status = Video_controller_window.STATUS_PLAYING
+            if self.auto_play:
+                self.switch_video()
+            QMessageBox.about(None, "Wrong cam Info", "Please tap correct IP and Port first")
 
     def set_video(self, url, video_type=VIDEO_TYPE_OFFLINE, auto_play=False):
         self.reset()
-        # self.video_url = "rtsp://192.168.43.1:8080/h264_ulaw.sdp"
+
         self.video_url = url
+
         self.video_type = video_type
         self.auto_play = auto_play
         self.set_timer_fps()
-        if self.auto_play:
-            self.switch_video()
 
     def play(self):
         if self.video_url == "" or self.video_url is None:
@@ -132,7 +139,7 @@ class Video_controller_window(Ui_Monitor):
             return
         self.playCapture.release()
         cv2.destroyAllWindows()
-        self.playCapture.open(self.video_url)
+        self.playCapture.open(0)
         self.Video_timer.start()
         self.Run_OCR.setIcon(self.centralwidget.style().standardIcon(QStyle.SP_MediaPause))
         self.status = Video_controller_window.STATUS_PLAYING

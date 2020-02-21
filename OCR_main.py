@@ -26,6 +26,8 @@ from Video_operation.setpdf_position import pdf_label
 from Video_operation.video_box import Video_controller_window as VideoWindow
 from Video_operation.Singleinstance import singleinstance
 
+from Remote_connection.Client import myclient
+
 
 def get_keys(d, value):
     """
@@ -112,8 +114,10 @@ class OCR_main(QWidget, VideoWindow):
         ip = self.IP_entry.text()
         port = self.Port_entry.text()
         if ip != '' and port != '':
-            url = "rtsp://"+ip+":"+port+"/h264_ulaw.sdp"
-            print("url is: "+url)
+
+            # url = "rtsp://"+ip+":"+port+"/h264_ulaw.sdp" # ip camera for android application
+            url = "http://"+ip+"/mjpg/video.mjpg" # IP camera for Axis M1045
+            print(url)
             mw.set_video(url, self.VIDEO_TYPE_REAL_TIME, True)
         else:
             QMessageBox.about(None, "No cam Info", "Please tap in IP and Port first")
@@ -132,14 +136,15 @@ class OCR_main(QWidget, VideoWindow):
         set a timer to run this program automatically in specific time period.
         :return:
         """
-        self.test = False
-        value = self.timer_output.value()
-        if value != '':
+        if self.PDF_file_name.text() != '':
+            self.test = False
+            self.Client = myclient()
+            value = self.timer_output.value()
             self.timer = QTimer(self)  # init a timer
             self.timer.timeout.connect(self.operate)  #
-            self.timer.start(value * 1000 * 60)  #
+            self.timer.start(value * 1000)  #
         else:
-            QMessageBox.about(None, "Timer empty", "Please fill a number first")
+            QMessageBox.about(None, "No file chosen", "Please pick a pdf file first")
 
     def run_program_test(self):
         """
@@ -169,6 +174,9 @@ class OCR_main(QWidget, VideoWindow):
 
         if self.test:
             present_pdf_(path)
+        else:
+            idata = [1124, 645, 456, 46]
+            self.Client.send_data(idata)
 
     def init_spinbox(self):
         self.timer_output.setMaximum(1000)
