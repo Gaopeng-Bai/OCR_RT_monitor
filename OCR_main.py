@@ -49,7 +49,6 @@ def present_pdf_(path):
 
 
 class OCR_main(QWidget, VideoWindow):
-    get_path: str
 
     def __init__(self, mainWindow, path="resource"):
         super().__init__(mainWindow=mainWindow)
@@ -63,6 +62,8 @@ class OCR_main(QWidget, VideoWindow):
 
         self.cwd = os.getcwd()
         self.pdftoimage = pdf_to_image()
+
+        self.Client = myclient()
 
         self.GUi_init_setting()
         self.pictureLabel.box_refresh_signal.signal[str].connect(self.refresh_boxes_to_output)
@@ -138,7 +139,7 @@ class OCR_main(QWidget, VideoWindow):
         """
         if self.PDF_file_name.text() != '':
             self.test = False
-            self.Client = myclient()
+
             value = self.timer_output.value()
             self.timer = QTimer(self)  # init a timer
             self.timer.timeout.connect(self.operate)  #
@@ -166,17 +167,19 @@ class OCR_main(QWidget, VideoWindow):
             if key in self.combine:
                 position['position_x'].append(self.combine[key][0])
                 position['position_y'].append(self.combine[key][1])
-                data.append(self.pictureLabel.output_dic[key])
-        if self.PDF_file_name.text() != "":
-            path = fill_data_in_pdf(position, data_to_fill=data, original_pdf=self.fileName_choose)
-        else:
-            QMessageBox.about(None, "No file chosen", "Please pick a pdf file first")
+                if self.pictureLabel.output_dic[key] == '':
+                    data.append("0")
+                else:
+                    data.append(self.pictureLabel.output_dic[key])
 
         if self.test:
+            if self.PDF_file_name.text() != "":
+                path = fill_data_in_pdf(position, data_to_fill=data, original_pdf=self.fileName_choose)
+            else:
+                QMessageBox.about(None, "No file chosen", "Please pick a pdf file first")
             present_pdf_(path)
         else:
-            idata = [1124, 645, 456, 46]
-            self.Client.send_data(idata)
+            self.Client.send_data(data)
 
     def init_spinbox(self):
         self.timer_output.setMaximum(1000)
