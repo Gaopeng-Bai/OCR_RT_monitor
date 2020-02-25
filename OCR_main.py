@@ -63,12 +63,16 @@ class OCR_main(QWidget, VideoWindow):
         self.cwd = os.getcwd()
         self.pdftoimage = pdf_to_image()
 
-        self.Client = myclient()
+        self.Client = myclient(self.noserver_callback)
 
         self.GUi_init_setting()
         self.pictureLabel.box_refresh_signal.signal[str].connect(self.refresh_boxes_to_output)
 
         self.test = bool
+
+    @staticmethod
+    def noserver_callback():
+        QMessageBox.about(None, "No Server connection", "Please run a local server first")
 
     def GUi_init_setting(self):
         # setting menu action.

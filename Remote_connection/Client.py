@@ -14,14 +14,15 @@ import socket
 
 
 class myclient:
-    def __init__(self):
+    def __init__(self, callback):
         self.tcpClientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # connect server
-        serverAddr = ('127.0.0.1', 8080)
+        serverAddr = ('127.0.0.2', 8080)
         try:
             self.tcpClientSocket.connect(serverAddr)
         except WindowsError:
             print("no server connection")
+            callback()
 
     def __del__(self):
         self.tcpClientSocket.close()
