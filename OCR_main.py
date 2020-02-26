@@ -11,6 +11,7 @@
 """
 import os
 import sys
+import threading
 
 import cv2
 from PyQt5.QtCore import *
@@ -63,15 +64,17 @@ class OCR_main(QWidget, VideoWindow):
         self.cwd = os.getcwd()
         self.pdftoimage = pdf_to_image()
 
-        self.Client = myclient(self.noserver_callback)
-
         self.GUi_init_setting()
         self.pictureLabel.box_refresh_signal.signal[str].connect(self.refresh_boxes_to_output)
 
-        self.test = bool
+        self.timer = QTimer(self)  # init a timer
+        self.timer.timeout.connect(self.operate)  #
 
-    @staticmethod
-    def noserver_callback():
+        self.test = bool
+        self.server_state = bool
+
+    def noserver_callback(self):
+        self.server_state = False
         QMessageBox.about(None, "No Server connection", "Please run a local server first")
 
     def GUi_init_setting(self):
@@ -142,12 +145,15 @@ class OCR_main(QWidget, VideoWindow):
         :return:
         """
         if self.PDF_file_name.text() != '':
-            self.test = False
+            self.server_state = True
+            print("Run Program thread:" + str(QThread.currentThreadId()))
+            self.Client = myclient(self.noserver_callback)
 
-            value = self.timer_output.value()
-            self.timer = QTimer(self)  # init a timer
-            self.timer.timeout.connect(self.operate)  #
-            self.timer.start(value * 1000)  #
+            if self.server_state:
+                self.test = False
+
+                value = self.timer_output.value()
+                self.timer.start(value * 1000)  #
         else:
             QMessageBox.about(None, "No file chosen", "Please pick a pdf file first")
 
@@ -156,10 +162,8 @@ class OCR_main(QWidget, VideoWindow):
         run this program manually and remotely, receiver a signal form client then present the results pdf file.
         :return:
         """
-        # init signal form server
         self.test = True
         self.operate()
-        # RUn_server(self.operate)
 
     def operate(self):
         self.pictureLabel.pick_screencut()
@@ -183,7 +187,14 @@ class OCR_main(QWidget, VideoWindow):
                 QMessageBox.about(None, "No file chosen", "Please pick a pdf file first")
             present_pdf_(path)
         else:
-            self.Client.send_data(data)
+            # print("operate Program thread:" + str(QThread.currentThreadId()))
+
+            send_data = threading.Thread(target=self.operate_thread, args=(data, self.Client,))
+            send_data.start()
+
+    def operate_thread(self, data, client):
+        # print("sent thread:" + str(QThread.currentThreadId()))
+        client.send_data(data)
 
     def init_spinbox(self):
         self.timer_output.setMaximum(1000)
