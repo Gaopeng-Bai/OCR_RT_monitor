@@ -146,7 +146,7 @@ class OCR_main(QWidget, VideoWindow):
         """
         if self.PDF_file_name.text() != '':
             self.server_state = True
-            print("Run Program thread:" + str(QThread.currentThreadId()))
+            # print("Run Program thread:" + str(QThread.currentThreadId()))
             self.Client = myclient(self.noserver_callback)
 
             if self.server_state:
