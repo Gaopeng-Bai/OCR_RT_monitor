@@ -12,6 +12,7 @@
 import os
 import sys
 import threading
+import time
 
 import cv2
 from PyQt5.QtCore import *
@@ -76,6 +77,11 @@ class OCR_main(QWidget, VideoWindow):
     def noserver_callback(self):
         self.server_state = False
         QMessageBox.about(None, "No Server connection", "Please run a local server first")
+
+    def _resettimer_callback(self):
+        self.server_state = False
+        self.timer.stop()
+        # QMessageBox.about(None, "No Server connection", "Please run a local server first")
 
     def GUi_init_setting(self):
         # setting menu action.
@@ -146,8 +152,9 @@ class OCR_main(QWidget, VideoWindow):
         """
         if self.PDF_file_name.text() != '':
             self.server_state = True
+            self.timer.stop()
             # print("Run Program thread:" + str(QThread.currentThreadId()))
-            self.Client = myclient(self.noserver_callback)
+            self.Client = myclient(self.noserver_callback, self._resettimer_callback)
 
             if self.server_state:
                 self.test = False
@@ -190,10 +197,12 @@ class OCR_main(QWidget, VideoWindow):
             # print("operate Program thread:" + str(QThread.currentThreadId()))
 
             send_data = threading.Thread(target=self.operate_thread, args=(data, self.Client,))
+            send_data.setDaemon(True)
             send_data.start()
+            send_data.join(0.5)
 
-    def operate_thread(self, data, client):
-        # print("sent thread:" + str(QThread.currentThreadId()))
+    @staticmethod
+    def operate_thread(data, client):
         client.send_data(data)
 
     def init_spinbox(self):

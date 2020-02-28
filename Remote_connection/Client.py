@@ -14,8 +14,8 @@ import socket
 
 
 class myclient:
-    def __init__(self, callback):
-        self.callback = callback
+    def __init__(self, callback, reset_timer):
+        self.callback_ = reset_timer
         self.tcpClientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # connect server
         serverAddr = ('127.0.0.1', 8080)
@@ -23,7 +23,7 @@ class myclient:
             self.tcpClientSocket.connect(serverAddr)
         except WindowsError:
             print("no server connection")
-            self.callback()
+            callback()
 
     def __del__(self):
         self.tcpClientSocket.close()
@@ -33,9 +33,9 @@ class myclient:
         data = ".".join(data)
         try:
             self.tcpClientSocket.send(data.encode("utf-8"))
-        except WindowsError:
+        except ConnectionResetError:
             print("no server connection")
-            self.callback()
+            self.callback_()
             
     def receiver(self):
         return self.tcpClientSocket.recv(1024)
