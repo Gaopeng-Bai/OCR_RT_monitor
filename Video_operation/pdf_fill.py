@@ -10,14 +10,19 @@
 # Reference:**********************************************
 
 import io
-import os
 import time
 from PyPDF2 import PdfFileWriter, PdfFileReader
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 
 
-def fill_data_in_pdf(position: object, data_to_fill, original_pdf="haha.pdf",
+def present_pdf_(path):
+    import webbrowser
+    path =path.split('/')
+    webbrowser.open(path[0]+'\\'+path[1])
+
+
+def fill_data_in_pdf(position: object, data_to_fill, original_pdf="haha.pdf", test=False,
                      destination_pdf="Output/destination"):
     """
     Function fill data into specific position of original pdf, generate new pdf file with data filled.
@@ -28,8 +33,6 @@ def fill_data_in_pdf(position: object, data_to_fill, original_pdf="haha.pdf",
     @param destination_pdf: generate new pdf.
     @return: no defined.
     """
-    if os.path.exists(destination_pdf):
-        os.remove(destination_pdf)
     packet = io.BytesIO()
     # create a new PDF with Reportlab
     can = canvas.Canvas(packet, pagesize=letter)
@@ -53,5 +56,7 @@ def fill_data_in_pdf(position: object, data_to_fill, original_pdf="haha.pdf",
     outputStream = open(destination_pdf, "wb")
     output.write(outputStream)
     outputStream.close()
+    if test:
+        present_pdf_(destination_pdf)
 
     return destination_pdf

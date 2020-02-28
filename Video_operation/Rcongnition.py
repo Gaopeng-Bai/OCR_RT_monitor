@@ -13,6 +13,7 @@ try:
     from PIL import Image, ImageFilter
 except ImportError:
     import Image
+import cv2
 import pytesseract
 
 threshold = 110
@@ -31,7 +32,7 @@ def ocr_core(filename):
     # noise filter, and convert to gray image
     im = Image.open(filename)
     im = im.convert('L')
-    # im = im.filter(ImageFilter.EDGE_ENHANCE)
+    # # im = im.filter(ImageFilter.EDGE_ENHANCE)
     out = im.point(table, '1')
     # out.show()
 
@@ -41,4 +42,4 @@ def ocr_core(filename):
 
 
 if __name__ == "__main__":
-    print("test : "+ocr_core("../1.png"))
+    print("test : " + ocr_core("../1.png"))

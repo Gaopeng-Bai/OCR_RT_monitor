@@ -44,12 +44,6 @@ def get_keys(d, value):
                 return k
 
 
-def present_pdf_(path):
-    import webbrowser
-    path =path.split('/')
-    webbrowser.open(path[0]+'\\'+path[1])
-
-
 class OCR_main(QWidget, VideoWindow):
 
     def __init__(self, mainWindow, path="resource"):
@@ -130,6 +124,7 @@ class OCR_main(QWidget, VideoWindow):
         if ip != '' and port != '':
 
             # url = "rtsp://"+ip+":"+port+"/h264_ulaw.sdp" # ip camera for android application
+            # url = "rtsptextrtsp://"+ip+"/axis-media/media.amp?videocodec=mpeg4" # ip camera for android application
             url = "http://"+ip+"/mjpg/video.mjpg" # IP camera for Axis M1045
             print(url)
             mw.set_video(url, self.VIDEO_TYPE_REAL_TIME, True)
@@ -189,10 +184,12 @@ class OCR_main(QWidget, VideoWindow):
 
         if self.test:
             if self.PDF_file_name.text() != "":
-                path = fill_data_in_pdf(position, data_to_fill=data, original_pdf=self.fileName_choose)
+                present = threading.Thread(target=fill_data_in_pdf, args=(position, data, self.fileName_choose, self.test,))
+                present.start()
+                # path = fill_data_in_pdf(position, data_to_fill=data, original_pdf=self.fileName_choose)
             else:
                 QMessageBox.about(None, "No file chosen", "Please pick a pdf file first")
-            present_pdf_(path)
+            # present_pdf_(path)
         else:
             # print("operate Program thread:" + str(QThread.currentThreadId()))
 
