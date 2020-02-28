@@ -123,9 +123,9 @@ class OCR_main(QWidget, VideoWindow):
         port = self.Port_entry.text()
         if ip != '' and port != '':
 
-            # url = "rtsp://"+ip+":"+port+"/h264_ulaw.sdp" # ip camera for android application
-            # url = "rtsptextrtsp://"+ip+"/axis-media/media.amp?videocodec=mpeg4" # ip camera for android application
-            url = "http://"+ip+"/mjpg/video.mjpg" # IP camera for Axis M1045
+            # url = 'rtsp://root:root@192.168.0.100:554/axis-media/media.amp' # ip camera for android application
+            url = "rtsp://root:root@"+ip+":"+port+"/axis-media/media.amp" # ip camera for android application
+            # url = "http://"+ip+"/mjpg/video.mjpg" # IP camera for Axis M1045
             print(url)
             mw.set_video(url, self.VIDEO_TYPE_REAL_TIME, True)
         else:
