@@ -42,4 +42,4 @@ def ocr_core(filename):
 
 
 if __name__ == "__main__":
-    print("test : " + ocr_core("../1.png"))
+    print("test : " + ocr_core("../4.png"))

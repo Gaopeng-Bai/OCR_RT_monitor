@@ -15,6 +15,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import QPainter, QPen, QGuiApplication
 from Video_operation.Rcongnition import ocr_core
 from Video_operation.Signal_creator import Communicate
+from Video_operation.orientation_justify import transfer
 
 from six.moves import cPickle
 import os
@@ -99,8 +100,10 @@ class myLabel(QLabel):
             # for test
             pixmap2.save(str(key) + '.png')
             # img.save(str(key) + '.png')
+            # Rotation correction for each images in case the images token from round lens camera.
+            # transfer(str(key) + '.png')
             self.output_dic[str(key)] = self.recognition(str(key) + '.png')
-            self.delete_box_image(str(key) + '.png')
+            # self.delete_box_image(str(key) + '.png')
 
     @staticmethod
     def recognition(path):
