@@ -60,7 +60,8 @@ class OCR_main(QWidget, VideoWindow):
         self.pdftoimage = pdf_to_image()
 
         self.GUi_init_setting()
-        self.pictureLabel.box_refresh_signal.signal[str].connect(self.refresh_boxes_to_output)
+        self.pictureLabel.box_refresh_signal.signal[str].connect(
+            self.refresh_boxes_to_output)
 
         self.timer = QTimer(self)  # init a timer
         self.timer.timeout.connect(self.operate)  #
@@ -70,7 +71,8 @@ class OCR_main(QWidget, VideoWindow):
 
     def noserver_callback(self):
         self.server_state = False
-        QMessageBox.about(None, "No Server connection", "Please run a local server first")
+        QMessageBox.about(None, "No Server connection",
+                          "Please run a local server first")
 
     def _resettimer_callback(self):
         self.server_state = False
@@ -103,7 +105,8 @@ class OCR_main(QWidget, VideoWindow):
         self.pdf_position_reset.setToolTip('Click to delete all position')
 
         self.run_program.clicked.connect(self.run_program_)
-        self.run_program.setToolTip("Click to run program according to the timer")
+        self.run_program.setToolTip(
+            "Click to run program according to the timer")
 
         self.test.clicked.connect(self.run_program_test)
 
@@ -123,12 +126,14 @@ class OCR_main(QWidget, VideoWindow):
         port = self.Port_entry.text()
         if ip != '' and port != '':
             # url = 'rtsp://root:root@192.168.0.100:554/axis-media/media.amp' # ip camera for android application
-            url = "rtsp://root:root@"+ip+":"+port+"/axis-media/media.amp" # ip camera for android application
+            url = "rtsp://root:root@"+ip+":"+port + \
+                "/axis-media/media.amp"  # ip camera for android application
             # url = "http://"+ip+"/mjpg/video.mjpg" # IP camera for Axis M1045
             print(url)
             mw.set_video(url, self.VIDEO_TYPE_REAL_TIME, True)
         else:
-            QMessageBox.about(None, "No cam Info", "Please tap in IP and Port first")
+            QMessageBox.about(None, "No cam Info",
+                              "Please tap in IP and Port first")
 
     def local_camera(self):
         self.IP_entry.setReadOnly(True)
@@ -148,7 +153,8 @@ class OCR_main(QWidget, VideoWindow):
             self.server_state = True
             self.timer.stop()
             # print("Run Program thread:" + str(QThread.currentThreadId()))
-            self.Client = myclient(self.noserver_callback, self._resettimer_callback)
+            self.Client = myclient(
+                self.noserver_callback, self._resettimer_callback)
 
             if self.server_state:
                 self.test = False
@@ -156,7 +162,8 @@ class OCR_main(QWidget, VideoWindow):
                 value = self.timer_output.value()
                 self.timer.start(value * 1000)  #
         else:
-            QMessageBox.about(None, "No file chosen", "Please pick a pdf file first")
+            QMessageBox.about(None, "No file chosen",
+                              "Please pick a pdf file first")
 
     def run_program_test(self):
         """
@@ -183,16 +190,19 @@ class OCR_main(QWidget, VideoWindow):
 
         if self.test:
             if self.PDF_file_name.text() != "":
-                present = threading.Thread(target=fill_data_in_pdf, args=(position, data, self.fileName_choose, self.test,))
+                present = threading.Thread(target=fill_data_in_pdf, args=(
+                    position, data, self.fileName_choose, self.test,))
                 present.start()
                 # path = fill_data_in_pdf(position, data_to_fill=data, original_pdf=self.fileName_choose)
             else:
-                QMessageBox.about(None, "No file chosen", "Please pick a pdf file first")
+                QMessageBox.about(None, "No file chosen",
+                                  "Please pick a pdf file first")
             # present_pdf_(path)
         else:
             # print("operate Program thread:" + str(QThread.currentThreadId()))
 
-            send_data = threading.Thread(target=self.operate_thread, args=(data, self.Client,))
+            send_data = threading.Thread(
+                target=self.operate_thread, args=(data, self.Client,))
             send_data.setDaemon(True)
             send_data.start()
             send_data.join(0.5)
@@ -215,8 +225,10 @@ class OCR_main(QWidget, VideoWindow):
         :return:
         """
         if self.boxes.currentText() in self.combine:
-            self.PositionX.setText(str(self.combine[self.boxes.currentText()][0]))
-            self.PositionY.setText(str(self.combine[self.boxes.currentText()][1]))
+            self.PositionX.setText(
+                str(self.combine[self.boxes.currentText()][0]))
+            self.PositionY.setText(
+                str(self.combine[self.boxes.currentText()][1]))
         else:
             self.PositionX.setText(' ')
             self.PositionY.setText(' ')
@@ -225,7 +237,8 @@ class OCR_main(QWidget, VideoWindow):
         if self.PDF_file_name.text() != '':
             self.position_set_window()
         else:
-            QMessageBox.about(None, "No file chosen", "Please pick a pdf file first")
+            QMessageBox.about(None, "No file chosen",
+                              "Please pick a pdf file first")
 
     def position_save(self, x, y):
         self.PositionX.setText(str(x))
@@ -235,7 +248,8 @@ class OCR_main(QWidget, VideoWindow):
             self.combine[self.boxes.currentText()] = [x, y]
             self.save_box_to_local()
         else:
-            QMessageBox.about(None, "No data", "Please fill position x and y completely")
+            QMessageBox.about(
+                None, "No data", "Please fill position x and y completely")
 
     def save_box_to_local(self):
         save_dict = dict(zip(self.combine.keys(), self.combine.values()))
@@ -255,7 +269,8 @@ class OCR_main(QWidget, VideoWindow):
         if self.fileName_choose == "":
             QMessageBox.about(None, "No file chosen", "Please try again")
         else:
-            self.get_path = self.pdftoimage.run_convert(self.fileName_choose, 0)
+            self.get_path = self.pdftoimage.run_convert(
+                self.fileName_choose, 0)
             ex.change_path(self.get_path)
             self.PDF_file_name.setText(self.fileName_choose)
 
@@ -290,9 +305,11 @@ class Box_manager_widget(QWidget, Ui_UI_box_manager):
         mw.refresh_boxes_to_output()
 
     def button_init(self):
-        self.delete_box.setToolTip('Delete the item you chosen, Shortcut key "Delete"')
+        self.delete_box.setToolTip(
+            'Delete the item you chosen, Shortcut key "Delete"')
         self.delete_box.clicked.connect(self.delete_box_)
-        self.Change_box_name.setToolTip('Change the name of item, shortcut key "F2"')
+        self.Change_box_name.setToolTip(
+            'Change the name of item, shortcut key "F2"')
         self.Change_box_name.clicked.connect(self.change_box_name_)
 
     def keyPressEvent(self, event):
@@ -300,31 +317,38 @@ class Box_manager_widget(QWidget, Ui_UI_box_manager):
             if self.item_chosen is not '':
                 self.delete_box_()
             else:
-                QMessageBox.about(None, "No item chosen", "Please click a item first")
+                QMessageBox.about(None, "No item chosen",
+                                  "Please click a item first")
         if event.key() == Qt.Key_F2:
             if self.item_chosen is not '':
                 self.change_box_name_()
             else:
-                QMessageBox.about(None, "No item chosen", "Please click a item first")
+                QMessageBox.about(None, "No item chosen",
+                                  "Please click a item first")
 
     def change_box_name_(self):
         if self.item_chosen is not '':
             # check if item_chosen is key in dict.
             name = self.get_input()
             if self.item_chosen in mw.pictureLabel.videobox:
-                mw.pictureLabel.videobox[name] = mw.pictureLabel.videobox.pop(self.item_chosen)
-                mw.pictureLabel.delete_box_image(str(self.item_chosen) + '.png')
+                mw.pictureLabel.videobox[name] = mw.pictureLabel.videobox.pop(
+                    self.item_chosen)
+                mw.pictureLabel.delete_box_image(
+                    str(self.item_chosen) + '.png')
             else:
                 a = get_keys(mw.pictureLabel.videobox, self.item_chosen)
-                mw.pictureLabel.videobox[name] = mw.pictureLabel.videobox.pop(a)
+                mw.pictureLabel.videobox[name] = mw.pictureLabel.videobox.pop(
+                    a)
                 mw.pictureLabel.delete_box_image(str(a) + '.png')
             mw.pictureLabel.save_box_to_local()
             self.refresh_box()
         else:
-            QMessageBox.about(None, "No item chosen", "Please click a item first")
+            QMessageBox.about(None, "No item chosen",
+                              "Please click a item first")
 
     def get_input(self):
-        text, okPressed = QInputDialog.getText(None, "Change box name", "Rename:")
+        text, okPressed = QInputDialog.getText(
+            None, "Change box name", "Rename:")
         if okPressed:
             if text != '':
                 return text
@@ -343,7 +367,8 @@ class Box_manager_widget(QWidget, Ui_UI_box_manager):
                     mw.combine.pop(self.item_chosen)
                     mw.save_box_to_local()
 
-                mw.pictureLabel.delete_box_image(str(self.item_chosen) + '.png')
+                mw.pictureLabel.delete_box_image(
+                    str(self.item_chosen) + '.png')
             else:
                 a = get_keys(mw.pictureLabel.videobox, self.item_chosen)
                 mw.pictureLabel.videobox.pop(a)
@@ -355,7 +380,8 @@ class Box_manager_widget(QWidget, Ui_UI_box_manager):
             mw.pictureLabel.save_box_to_local()
             self.refresh_box()
         else:
-            QMessageBox.about(None, "No item chosen", "Please click a item first")
+            QMessageBox.about(None, "No item chosen",
+                              "Please click a item first")
 
     def box_list_init(self):
         """
@@ -363,7 +389,8 @@ class Box_manager_widget(QWidget, Ui_UI_box_manager):
         :return:
         """
         self.Box_list.verticalHeader().setVisible(False)
-        self.Box_list.setHorizontalHeaderLabels(['Box name', 'X0', 'X1', 'Y0', 'Y1'])
+        self.Box_list.setHorizontalHeaderLabels(
+            ['Box name', 'X0', 'X1', 'Y0', 'Y1'])
         self.Box_list.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.Box_list.resizeColumnsToContents()
         self.Box_list.resizeRowsToContents()
@@ -387,10 +414,14 @@ class Box_manager_widget(QWidget, Ui_UI_box_manager):
         self.Box_list.setRowCount(len(mw.pictureLabel.videobox))
         for i, item in enumerate(mw.pictureLabel.videobox):
             self.Box_list.setItem(i, 0, QTableWidgetItem(item))
-            self.Box_list.setItem(i, 1, QTableWidgetItem(str(mw.pictureLabel.videobox[item][0])))
-            self.Box_list.setItem(i, 2, QTableWidgetItem(str(mw.pictureLabel.videobox[item][1])))
-            self.Box_list.setItem(i, 3, QTableWidgetItem(str(mw.pictureLabel.videobox[item][2])))
-            self.Box_list.setItem(i, 4, QTableWidgetItem(str(mw.pictureLabel.videobox[item][3])))
+            self.Box_list.setItem(i, 1, QTableWidgetItem(
+                str(mw.pictureLabel.videobox[item][0])))
+            self.Box_list.setItem(i, 2, QTableWidgetItem(
+                str(mw.pictureLabel.videobox[item][1])))
+            self.Box_list.setItem(i, 3, QTableWidgetItem(
+                str(mw.pictureLabel.videobox[item][2])))
+            self.Box_list.setItem(i, 4, QTableWidgetItem(
+                str(mw.pictureLabel.videobox[item][3])))
         self.Box_list.itemClicked.connect(self.item_chosen_slot)
 
     def item_chosen_slot(self, item):
@@ -410,7 +441,8 @@ class PDF_image(QWidget, Ui_Form):
     def init_GUI(self, path):
         self.lb = pdf_label(callback_empty_painter=self.callback)
         self.lb.setGeometry(QRect(0, 0, 1000, 1400))
-        self.lb.setToolTip('Left button to draw a rect area that need to fill, Right button confirm current position')
+        self.lb.setToolTip(
+            'Left button to draw a rect area that need to fill, Right button confirm current position')
 
         self.image_set(path)
         self.verticalLayout_2.addWidget(self.lb)
@@ -424,14 +456,16 @@ class PDF_image(QWidget, Ui_Form):
         height, width, bytesPerComponent = img.shape
         bytesPerLine = 3 * width
         cv2.cvtColor(img, cv2.COLOR_BGR2RGB, img)
-        QImg = QImage(img.data, width, height, bytesPerLine, QImage.Format_RGB888)
+        QImg = QImage(img.data, width, height,
+                      bytesPerLine, QImage.Format_RGB888)
         pixmap = QPixmap.fromImage(QImg)
 
         self.lb.setPixmap(pixmap)
 
     @staticmethod
     def callback():
-        QMessageBox.about(None, "No area drown", "Please press mouse left button to draw a area")
+        QMessageBox.about(None, "No area drown",
+                          "Please press mouse left button to draw a area")
 
     def slot_right_button(self):
         x, y = self.lb.return_value()
@@ -464,4 +498,3 @@ if __name__ == "__main__":
 
         ex = PDF_image()
         sys.exit(app.exec_())
-

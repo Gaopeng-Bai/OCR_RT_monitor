@@ -37,7 +37,8 @@ def ocr_core(filename):
     out = im.point(table, '1')
     # out.show()
 
-    text = pytesseract.image_to_string(out, config=custom_language_config)  # We'll use Pillow's Image class to open the image and pytesseract to
+    # We'll use Pillow's Image class to open the image and pytesseract to
+    text = pytesseract.image_to_string(out, config=custom_language_config)
     # detect the string in the image
     return text
 
