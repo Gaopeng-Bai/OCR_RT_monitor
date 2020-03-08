@@ -53,12 +53,13 @@ class pdf_label(QLabel):
 
     def paintEvent(self, event):
         super().paintEvent(event)
-        rect = QRect(self.x0, self.y0, abs(self.x1 - self.x0), abs(self.y1 - self.y0))
+        rect = QRect(self.x0, self.y0, abs(
+            self.x1 - self.x0), abs(self.y1 - self.y0))
         painter = QPainter(self)
         painter.setPen(QPen(Qt.red, 4, Qt.SolidLine))
         painter.drawRect(rect)
 
     def return_value(self):
 
-        return int((self.x0+(self.x1-self.x0)/2-133+127)*96/162), \
-               int((1470-(self.y0+(self.y1-self.y0)/2+462))*595/982+230)
+        return int((self.x0 + (self.x1 - self.x0) / 2 - 133 + 127) * 96 / 162), \
+            int((1470 - (self.y0 + (self.y1 - self.y0) / 2 + 462)) * 595 / 982 + 230)

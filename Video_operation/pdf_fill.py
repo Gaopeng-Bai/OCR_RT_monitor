@@ -18,12 +18,16 @@ from reportlab.pdfgen import canvas
 
 def present_pdf_(path):
     import webbrowser
-    path =path.split('/')
-    webbrowser.open(path[0]+'\\'+path[1])
+    path = path.split('/')
+    webbrowser.open(path[0] + '\\' + path[1])
 
 
-def fill_data_in_pdf(position: object, data_to_fill, original_pdf="haha.pdf", test=False,
-                     destination_pdf="Output/destination"):
+def fill_data_in_pdf(
+        position: object,
+        data_to_fill,
+        original_pdf="haha.pdf",
+        test=False,
+        destination_pdf="Output/destination"):
     """
     Function fill data into specific position of original pdf, generate new pdf file with data filled.
     @param position: a dictionary described the positions 2-dim (x, y) that Each parameter(eg.. x) represent as a list.
@@ -37,7 +41,8 @@ def fill_data_in_pdf(position: object, data_to_fill, original_pdf="haha.pdf", te
     # create a new PDF with Reportlab
     can = canvas.Canvas(packet, pagesize=letter)
     for i in range(len(position['position_x'])):
-        can.drawString(int(position['position_x'][i]), int(position['position_y'][i]), data_to_fill[i])
+        can.drawString(int(position['position_x'][i]), int(
+            position['position_y'][i]), data_to_fill[i])
     can.save()
 
     # move to the beginning of the StringIO buffer
@@ -52,7 +57,7 @@ def fill_data_in_pdf(position: object, data_to_fill, original_pdf="haha.pdf", te
     output.addPage(page)
     # finally, write "output" to a real
     current = time.strftime('%Y-%m-%d_%H-%M-%S', time.localtime(time.time()))
-    destination_pdf = destination_pdf+'_'+current+'.pdf'
+    destination_pdf = destination_pdf + '_' + current + '.pdf'
     outputStream = open(destination_pdf, "wb")
     output.write(outputStream)
     outputStream.close()

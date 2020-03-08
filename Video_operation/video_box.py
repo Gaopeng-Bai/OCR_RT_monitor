@@ -35,7 +35,12 @@ class Video_controller_window(Ui_Monitor):
 
     video_url = ""
 
-    def __init__(self, mainWindow, video_url="", video_type=VIDEO_TYPE_OFFLINE, auto_play=True):
+    def __init__(
+            self,
+            mainWindow,
+            video_url="",
+            video_type=VIDEO_TYPE_OFFLINE,
+            auto_play=True):
         self.playCapture = VideoCapture(0, cv2.CAP_DSHOW)
         self.Video_timer = VideoTimer()
         self.pictureLabel = myLabel(self.save_box_callback)
@@ -48,12 +53,14 @@ class Video_controller_window(Ui_Monitor):
 
     @staticmethod
     def save_box_callback():
-        text, okPressed = QInputDialog.getText(None, "Save this box?", "Box name:")
+        text, okPressed = QInputDialog.getText(
+            None, "Save this box?", "Box name:")
         if okPressed:
             if text != '':
                 return text
             else:
-                QMessageBox.about(None, "Name empty", "Please save again with name")
+                QMessageBox.about(
+                    None, "Name empty", "Please save again with name")
                 return 0
         else:
             return 0
@@ -61,19 +68,24 @@ class Video_controller_window(Ui_Monitor):
     def element_init(self):
         # Components
         self.pictureLabel.setCursor(Qt.CrossCursor)
-        self.pictureLabel.setToolTip('Press down left button of mouse to draw a box, Right button to set a name of it'
-                                     'click ok save it, otherwise click cancel')
-        init_image = QPixmap("resource/cat.jpeg").scaled(self.centralwidget.width(), self.centralwidget.height())
+        self.pictureLabel.setToolTip(
+            'Press down left button of mouse to draw a box, Right button to set a name of it'
+            'click ok save it, otherwise click cancel')
+        init_image = QPixmap(
+            "resource/cat.jpeg").scaled(self.centralwidget.width(), self.centralwidget.height())
         self.pictureLabel.setPixmap(init_image)
 
         self.mainlayerout.addWidget(self.pictureLabel)
 
         self.Run_OCR.setEnabled(True)
-        self.Run_OCR.setIcon(self.centralwidget.style().standardIcon(QStyle.SP_MediaPlay))
+        self.Run_OCR.setIcon(
+            self.centralwidget.style().standardIcon(
+                QStyle.SP_MediaPlay))
         self.Run_OCR.clicked.connect(self.switch_video)
 
         # Video_timer 设置
-        self.Video_timer.Video_timeSignal.signal[str].connect(self.show_video_images)
+        self.Video_timer.Video_timeSignal.signal[str].connect(
+            self.show_video_images)
 
         # video 初始设置
         if self.video_url != "":
@@ -87,7 +99,9 @@ class Video_controller_window(Ui_Monitor):
         self.playCapture.release()
         cv2.destroyAllWindows()
         self.status = Video_controller_window.STATUS_INIT
-        self.Run_OCR.setIcon(self.centralwidget.style().standardIcon(QStyle.SP_MediaPlay))
+        self.Run_OCR.setIcon(
+            self.centralwidget.style().standardIcon(
+                QStyle.SP_MediaPlay))
 
     def set_timer_fps(self):
 
@@ -103,7 +117,10 @@ class Video_controller_window(Ui_Monitor):
             self.status = Video_controller_window.STATUS_PLAYING
             if self.auto_play:
                 self.switch_video()
-            QMessageBox.about(None, "Wrong cam Info", "Please tap correct IP and Port first")
+            QMessageBox.about(
+                None,
+                "Wrong cam Info",
+                "Please tap correct IP and Port first")
 
     def set_video(self, url, video_type=VIDEO_TYPE_OFFLINE, auto_play=False):
         self.reset()
@@ -120,7 +137,9 @@ class Video_controller_window(Ui_Monitor):
         if not self.playCapture.isOpened():
             self.playCapture.open(self.video_url)
         self.Video_timer.start()
-        self.Run_OCR.setIcon(self.centralwidget.style().standardIcon(QStyle.SP_MediaPause))
+        self.Run_OCR.setIcon(
+            self.centralwidget.style().standardIcon(
+                QStyle.SP_MediaPause))
         self.status = Video_controller_window.STATUS_PLAYING
 
     def stop(self):
@@ -131,7 +150,9 @@ class Video_controller_window(Ui_Monitor):
             if self.video_type is Video_controller_window.VIDEO_TYPE_REAL_TIME:
                 self.playCapture.release()
                 cv2.destroyAllWindows()
-            self.Run_OCR.setIcon(self.centralwidget.style().standardIcon(QStyle.SP_MediaPlay))
+            self.Run_OCR.setIcon(
+                self.centralwidget.style().standardIcon(
+                    QStyle.SP_MediaPlay))
         self.status = Video_controller_window.STATUS_PAUSE
 
     def re_play(self):
@@ -141,7 +162,9 @@ class Video_controller_window(Ui_Monitor):
         cv2.destroyAllWindows()
         self.playCapture.open(0)
         self.Video_timer.start()
-        self.Run_OCR.setIcon(self.centralwidget.style().standardIcon(QStyle.SP_MediaPause))
+        self.Run_OCR.setIcon(
+            self.centralwidget.style().standardIcon(
+                QStyle.SP_MediaPause))
         self.status = Video_controller_window.STATUS_PLAYING
 
     def show_video_images(self):
@@ -154,7 +177,8 @@ class Video_controller_window(Ui_Monitor):
                 elif frame.ndim == 2:
                     rgb = cvtColor(frame, COLOR_GRAY2BGR)
 
-                temp_image = QImage(rgb.flatten(), width, height, QImage.Format_RGB888)
+                temp_image = QImage(
+                    rgb.flatten(), width, height, QImage.Format_RGB888)
                 temp_pixmap = QPixmap.fromImage(temp_image)
                 self.pictureLabel.setPixmap(temp_pixmap)
             else:
@@ -163,7 +187,9 @@ class Video_controller_window(Ui_Monitor):
                 if not success and self.video_type is Video_controller_window.VIDEO_TYPE_OFFLINE:
                     print("play finished")  # Judge local file is finished
                     self.reset()
-                    self.Run_OCR.setIcon(self.centralwidget.style().standardIcon(QStyle.SP_MediaStop))
+                    self.Run_OCR.setIcon(
+                        self.centralwidget.style().standardIcon(
+                            QStyle.SP_MediaStop))
                 return
         else:
             print("open file or capturing device error, init again")
@@ -175,18 +201,24 @@ class Video_controller_window(Ui_Monitor):
         if self.status is Video_controller_window.STATUS_INIT:
             self.playCapture.open(self.video_url)
             self.Video_timer.start()
-            self.Run_OCR.setIcon(self.centralwidget.style().standardIcon(QStyle.SP_MediaPause))
+            self.Run_OCR.setIcon(
+                self.centralwidget.style().standardIcon(
+                    QStyle.SP_MediaPause))
         elif self.status is Video_controller_window.STATUS_PLAYING:
             self.Video_timer.stop()
             if self.video_type is Video_controller_window.VIDEO_TYPE_REAL_TIME:
                 self.playCapture.release()
                 cv2.destroyAllWindows()
-            self.Run_OCR.setIcon(self.centralwidget.style().standardIcon(QStyle.SP_MediaPlay))
+            self.Run_OCR.setIcon(
+                self.centralwidget.style().standardIcon(
+                    QStyle.SP_MediaPlay))
         elif self.status is Video_controller_window.STATUS_PAUSE:
             if self.video_type is Video_controller_window.VIDEO_TYPE_REAL_TIME:
                 self.playCapture.open(self.video_url)
             self.Video_timer.start()
-            self.Run_OCR.setIcon(self.centralwidget.style().standardIcon(QStyle.SP_MediaPause))
+            self.Run_OCR.setIcon(
+                self.centralwidget.style().standardIcon(
+                    QStyle.SP_MediaPause))
 
         self.status = (Video_controller_window.STATUS_PLAYING,
                        Video_controller_window.STATUS_PAUSE,

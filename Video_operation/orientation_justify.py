@@ -3,7 +3,6 @@ import cv2
 import numpy as np
 
 
-
 # 度数转换
 def DegreeTrans(theta):
     res = theta / np.pi * 180
@@ -18,7 +17,9 @@ def rotateImage(src, degree):
     RotateMatrix = cv2.getRotationMatrix2D((w / 2.0, h / 2.0), degree, 1)
     # print(RotateMatrix)
     # 仿射变换，背景色填充为白色
-    rotate = cv2.warpAffine(src, RotateMatrix, (w, h), borderValue=(255, 255, 255))
+    rotate = cv2.warpAffine(
+        src, RotateMatrix, (w, h), borderValue=(
+            255, 255, 255))
     return rotate
 
 
@@ -47,7 +48,8 @@ def CalcDegree(srcImage):
             y2 = int(round(y0 - 1000 * a))
             # 只选角度最小的作为旋转角度
             sum += theta
-            cv2.line(lineimage, (x1, y1), (x2, y2), (0, 0, 255), 1, cv2.LINE_AA)
+            cv2.line(lineimage, (x1, y1), (x2, y2),
+                     (0, 0, 255), 1, cv2.LINE_AA)
             cv2.imshow("Imagelines", lineimage)
 
     # 对所有角度求平均，这样做旋转效果会更好

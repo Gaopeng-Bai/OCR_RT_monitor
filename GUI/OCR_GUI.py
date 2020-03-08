@@ -7,6 +7,7 @@
 # WARNING! All changes made in this file will be lost!
 
 
+import resource.res_rc
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
@@ -15,7 +16,10 @@ class Ui_Monitor(object):
         Monitor.setObjectName("Monitor")
         Monitor.resize(1010, 548)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/logo/logo.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(
+            QtGui.QPixmap(":/logo/logo.png"),
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off)
         Monitor.setWindowIcon(icon)
         Monitor.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
         self.centralwidget = QtWidgets.QWidget(Monitor)
@@ -41,11 +45,14 @@ class Ui_Monitor(object):
         self.verticalLayout.addWidget(self.Remote_label)
         self.gridLayout = QtWidgets.QGridLayout()
         self.gridLayout.setObjectName("gridLayout")
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout.addItem(spacerItem, 2, 2, 1, 1)
-        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem1 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout.addItem(spacerItem1, 2, 4, 1, 1)
-        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem2 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout.addItem(spacerItem2, 2, 0, 1, 1)
         self.IP_entry = QtWidgets.QLineEdit(self.centralwidget)
         self.IP_entry.setObjectName("IP_entry")
@@ -85,7 +92,8 @@ class Ui_Monitor(object):
         self.gridLayout.addWidget(self.Run_OCR, 5, 4, 1, 1)
         self.verticalLayout.addLayout(self.gridLayout)
         self.verticalLayout_2.addLayout(self.verticalLayout)
-        spacerItem3 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        spacerItem3 = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_2.addItem(spacerItem3)
         self.label_3 = QtWidgets.QLabel(self.centralwidget)
         font = QtGui.QFont()
@@ -98,9 +106,11 @@ class Ui_Monitor(object):
         self.verticalLayout_2.addWidget(self.label_3)
         self.gridLayout_4 = QtWidgets.QGridLayout()
         self.gridLayout_4.setObjectName("gridLayout_4")
-        spacerItem4 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        spacerItem4 = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout_4.addItem(spacerItem4, 2, 1, 1, 1)
-        spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem5 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout_4.addItem(spacerItem5, 1, 0, 1, 1)
         self.label_6 = QtWidgets.QLabel(self.centralwidget)
         self.label_6.setObjectName("label_6")
@@ -111,7 +121,8 @@ class Ui_Monitor(object):
         self.run_program = QtWidgets.QPushButton(self.centralwidget)
         self.run_program.setObjectName("run_program")
         self.gridLayout_4.addWidget(self.run_program, 1, 2, 1, 1)
-        spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem6 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout_4.addItem(spacerItem6, 1, 3, 1, 1)
         self.test = QtWidgets.QPushButton(self.centralwidget)
         self.test.setObjectName("test")
@@ -129,11 +140,14 @@ class Ui_Monitor(object):
         self.PDF_file_name.setReadOnly(True)
         self.PDF_file_name.setObjectName("PDF_file_name")
         self.gridLayout_2.addWidget(self.PDF_file_name, 0, 4, 1, 1)
-        spacerItem7 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem7 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout_2.addItem(spacerItem7, 0, 2, 1, 1)
-        spacerItem8 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem8 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout_2.addItem(spacerItem8, 0, 0, 1, 1)
-        spacerItem9 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem9 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.gridLayout_2.addItem(spacerItem9, 0, 5, 1, 1)
         self.pdf_position_set = QtWidgets.QPushButton(self.centralwidget)
         self.pdf_position_set.setObjectName("pdf_position_set")
@@ -159,7 +173,8 @@ class Ui_Monitor(object):
         self.verticalLayout_2.addLayout(self.gridLayout_2)
         self.Control_box.addLayout(self.verticalLayout_2)
         self.mainlayerout.addLayout(self.Control_box)
-        spacerItem10 = QtWidgets.QSpacerItem(40, 40, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem10 = QtWidgets.QSpacerItem(
+            40, 40, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.mainlayerout.addItem(spacerItem10)
         self.horizontalLayout.addLayout(self.mainlayerout)
         Monitor.setCentralWidget(self.centralwidget)
@@ -198,7 +213,10 @@ class Ui_Monitor(object):
     def retranslateUi(self, Monitor):
         _translate = QtCore.QCoreApplication.translate
         Monitor.setWindowTitle(_translate("Monitor", "OCR Monitor"))
-        self.Remote_label.setText(_translate("Monitor", "Remote Camera setting"))
+        self.Remote_label.setText(
+            _translate(
+                "Monitor",
+                "Remote Camera setting"))
         self.Disconnect_cam.setText(_translate("Monitor", "Disconnect"))
         self.label.setText(_translate("Monitor", "Camera IP Address:"))
         self.Connect_cam.setText(_translate("Monitor", "Connect"))
@@ -217,7 +235,7 @@ class Ui_Monitor(object):
         self.menuSet_Camera.setTitle(_translate("Monitor", "Set Camera"))
         self.menuSetting.setTitle(_translate("Monitor", "Setting"))
         self.actionLocal_Camera.setText(_translate("Monitor", "Local Camera"))
-        self.actionRemote_Camera.setText(_translate("Monitor", "Remote Camera"))
+        self.actionRemote_Camera.setText(
+            _translate("Monitor", "Remote Camera"))
         self.actionBox_set.setText(_translate("Monitor", "Box set"))
         self.actionBox_manage.setText(_translate("Monitor", "Box manage"))
-import resource.res_rc

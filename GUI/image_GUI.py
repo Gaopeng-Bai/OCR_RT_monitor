@@ -7,6 +7,7 @@
 # WARNING! All changes made in this file will be lost!
 
 
+import resource.res_rc
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
@@ -15,7 +16,10 @@ class Ui_Form(object):
         Form.setObjectName("Form")
         Form.resize(980, 2000)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/logo/logo.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(
+            QtGui.QPixmap(":/logo/logo.png"),
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off)
         Form.setWindowIcon(icon)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(Form)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
@@ -29,4 +33,3 @@ class Ui_Form(object):
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Position generator"))
-import resource.res_rc

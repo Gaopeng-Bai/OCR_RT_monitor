@@ -7,6 +7,7 @@
 # WARNING! All changes made in this file will be lost!
 
 
+import resource.res_rc
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
@@ -15,7 +16,10 @@ class Ui_UI_box_manager(object):
         UI_box_manager.setObjectName("UI_box_manager")
         UI_box_manager.resize(548, 419)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/logo/logo.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(
+            QtGui.QPixmap(":/logo/logo.png"),
+            QtGui.QIcon.Normal,
+            QtGui.QIcon.Off)
         UI_box_manager.setWindowIcon(icon)
         UI_box_manager.setStyleSheet("")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(UI_box_manager)
@@ -40,7 +44,8 @@ class Ui_UI_box_manager(object):
         self.Change_box_name = QtWidgets.QPushButton(self.frame)
         self.Change_box_name.setObjectName("Change_box_name")
         self.horizontalLayout.addWidget(self.Change_box_name)
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
         self.delete_box = QtWidgets.QPushButton(self.frame)
         self.delete_box.setObjectName("delete_box")
@@ -54,7 +59,10 @@ class Ui_UI_box_manager(object):
 
     def retranslateUi(self, UI_box_manager):
         _translate = QtCore.QCoreApplication.translate
-        UI_box_manager.setWindowTitle(_translate("UI_box_manager", "Box_Manager"))
-        self.Change_box_name.setText(_translate("UI_box_manager", "Change Name"))
+        UI_box_manager.setWindowTitle(
+            _translate("UI_box_manager", "Box_Manager"))
+        self.Change_box_name.setText(
+            _translate(
+                "UI_box_manager",
+                "Change Name"))
         self.delete_box.setText(_translate("UI_box_manager", "Delete"))
-import resource.res_rc

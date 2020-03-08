@@ -57,7 +57,8 @@ class pdf_to_image:
         img.compression_quality = 100
         img.background_color = Color("white")
         filename = filename.split("/")[-1]
-        img_path = 'resource/%s%s.png' % (filename[:filename.rindex('.')], "temp")
+        img_path = 'resource/%s%s.png' % (
+            filename[:filename.rindex('.')], "temp")
         delete_file("temp", root='resource/')
         img.save(filename=img_path)
         img.destroy()

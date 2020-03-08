@@ -7,7 +7,7 @@
 # @File    : Singleinstance.py
 # @User    : baigaopeng
 # @Software: PyCharm
-# @Description: 
+# @Description:
 # Reference:**********************************************
 from win32event import CreateMutex
 from win32api import CloseHandle, GetLastError
