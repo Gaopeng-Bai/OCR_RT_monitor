@@ -13,9 +13,10 @@ try:
     from PIL import Image, ImageFilter
 except ImportError:
     import Image
-import cv2
 import pytesseract
 
+
+custom_language_config = r'-l num+eng'
 threshold = 110
 table = []
 for i in range(256):
@@ -36,7 +37,7 @@ def ocr_core(filename):
     out = im.point(table, '1')
     # out.show()
 
-    text = pytesseract.image_to_string(out)  # We'll use Pillow's Image class to open the image and pytesseract to
+    text = pytesseract.image_to_string(out, config=custom_language_config)  # We'll use Pillow's Image class to open the image and pytesseract to
     # detect the string in the image
     return text
 
