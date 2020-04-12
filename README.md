@@ -18,12 +18,12 @@ Before running this program, the local OS need to install several plugins to sup
 
 ## Usage
 
- Run on single operation.
+ Run:
 
-    ```
-    python OCR_mian.py
-    ```
- 
+    python OCR_main.py
+
 ### 1. Video Resource
 
-* The default video stream comes from the local camera. 
+* The default video is the local camera. 
+
+* For remote camera function, this app currently tested only on the RSTP protocol of [M1054](https://www.axis.com/products/axis-m1054) IP camera. 
