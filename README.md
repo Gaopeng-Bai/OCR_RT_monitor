@@ -18,9 +18,12 @@ Before running this program, the local OS need to install several plugins to sup
 
 ## Usage
 
-1. Run on single operation.
+ Run on single operation.
 
     ```
     python OCR_mian.py
     ```
-    
+ 
+### 1. Video Resource
+
+* The default video stream comes from the local camera. 
